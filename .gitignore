@@ -1,3 +1,5 @@
 test-ledger/
 node_modules/
-frontend/node_modules/
+target/
+soundcloud_license/target/
+.next/
