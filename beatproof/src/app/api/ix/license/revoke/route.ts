@@ -1,15 +1,25 @@
 import { z } from 'zod';
 import { buildRevokeTransaction } from '@/lib/solana/builders';
+import { requireWalletFromSession, WalletSessionError } from '@/lib/auth/session';
 import { NextResponse } from 'next/server';
 
 const Body = z.object({
   beatHashHex: z.string().length(64),
-  issuer: z.string(), // PublicKey as base58
   licensee: z.string(), // PublicKey as base58
 });
 
 export async function POST(request: Request) {
   try {
+    let issuer: string;
+    try {
+      issuer = requireWalletFromSession();
+    } catch (sessionError) {
+      if (sessionError instanceof WalletSessionError) {
+        return NextResponse.json({ error: sessionError.message }, { status: sessionError.status });
+      }
+      throw sessionError;
+    }
+
     const body = await request.json();
     const parsed = Body.safeParse(body);
     
@@ -20,7 +30,7 @@ export async function POST(request: Request) {
       );
     }
     
-    const { beatHashHex, issuer, licensee } = parsed.data;
+    const { beatHashHex, licensee } = parsed.data;
     
     const txBase64 = await buildRevokeTransaction({
       beatHashHex,

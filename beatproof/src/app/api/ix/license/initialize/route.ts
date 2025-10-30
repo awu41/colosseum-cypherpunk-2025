@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import { buildInitializeTransaction } from '@/lib/solana/builders';
+import { requireWalletFromSession, WalletSessionError } from '@/lib/auth/session';
 import { NextResponse } from 'next/server';
 
 const Body = z.object({
@@ -10,11 +11,20 @@ const Body = z.object({
   territory: z.string(),
   validUntil: z.string().or(z.number()).transform((val) => BigInt(val)),
   issuer: z.string(), // PublicKey as base58
-  licensee: z.string(), // PublicKey as base58
 });
 
 export async function POST(request: Request) {
   try {
+    let licensee: string;
+    try {
+      licensee = requireWalletFromSession();
+    } catch (sessionError) {
+      if (sessionError instanceof WalletSessionError) {
+        return NextResponse.json({ error: sessionError.message }, { status: sessionError.status });
+      }
+      throw sessionError;
+    }
+
     const body = await request.json();
     const parsed = Body.safeParse(body);
     
