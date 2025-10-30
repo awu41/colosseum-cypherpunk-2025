@@ -8,7 +8,7 @@ const shortenAddress = (value) => {
   return `${value.slice(0, 4)}…${value.slice(-4)}`;
 };
 
-const NavBar = ({ showNavLinks = true, devMode = false, onExitDev }) => {
+const NavBar = ({ devMode = false, onExitDev }) => {
   const { connected, publicKey } = useWallet();
 
   const walletAddress = useMemo(() => {
@@ -27,17 +27,9 @@ const NavBar = ({ showNavLinks = true, devMode = false, onExitDev }) => {
       transition={{ duration: 0.8, ease: 'easeOut' }}
     >
       <div className="brand">
-        <span className="brand__mark" />
-        <span>Solara Soundscapes</span>
+        <img src="/logo.svg" alt="Beatproof logo" className="brand__logo" />
+        <span>Beatproof</span>
       </div>
-
-      {showNavLinks && (
-        <div className="nav-links" role="navigation" aria-label="Primary">
-          <span>Explore</span>
-          <span>Artists</span>
-          <span>Insights</span>
-        </div>
-      )}
 
       <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap' }}>
         {devMode && (

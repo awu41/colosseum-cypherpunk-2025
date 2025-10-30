@@ -43,7 +43,7 @@ const MarketplacePage = ({ devMode = false, onExitDev }) => {
       transition={{ duration: 0.55, ease: 'easeOut' }}
       style={{ display: 'grid', gap: '2.8rem', paddingBottom: '6rem' }}
     >
-      <NavBar showNavLinks={false} devMode={devMode} onExitDev={onExitDev} />
+      <NavBar devMode={devMode} onExitDev={onExitDev} />
 
       <motion.section
         className='island floating'

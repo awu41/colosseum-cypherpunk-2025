@@ -25,7 +25,7 @@ const LandingHero = ({ onDevExplore }) => (
         <a className="primary-button" href="#marketplace" aria-label="View the marketplace section">
           Enter the Marketplace
         </a>
-        <a className="ghost-button" href="#about" aria-label="Learn more about Solara Soundscapes">
+        <a className="ghost-button" href="#about" aria-label="Learn more about Beatproof">
           Learn More
         </a>
         {onDevExplore && (

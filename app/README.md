@@ -1,4 +1,4 @@
-# Solara Soundscapes Frontend
+# Beatproof Frontend
 
 Immersive floating-island interface for a Solana-powered audio NFT marketplace. Built with React, Vite, Framer Motion, and Solana wallet adapters.
 
@@ -10,9 +10,8 @@ Immersive floating-island interface for a Solana-powered audio NFT marketplace. 
 - Responsive layout, dark accessibility-conscious palette, and reduced-motion fallbacks.
 
 ## Getting Started
-
 ```bash
-cd frontend
+cd app
 npm install
 npm run dev
 ```
@@ -34,4 +33,3 @@ npm run dev
 2. Wire the SoundCloud embeds to dynamic metadata or user-generated content.
 3. Integrate analytics and user onboarding flows for first-time collectors.
 4. Expand accessibility testing (keyboard focus states, screen-reader copy).
-
