@@ -3,7 +3,10 @@ import { getProgram } from '@/lib/anchor/program';
 import { deriveLicensePda } from '@/lib/solana/pda';
 import { NextResponse } from 'next/server';
 
-const Body = z.object({ beatHashHex: z.string().length(64) });
+const Body = z.object({ 
+  beatHashHex: z.string().length(64),
+  territory: z.string().optional(),
+});
 
 export async function POST(request: Request) {
   try {
@@ -17,20 +20,33 @@ export async function POST(request: Request) {
       );
     }
     
-    const { beatHashHex } = parsed.data;
+    const { beatHashHex, territory } = parsed.data;
     
     const program = getProgram();
     const pda = deriveLicensePda(program.programId, beatHashHex);
     const account = await (program.account as any).License.fetchNullable(pda);
     
     if (!account) {
-      return NextResponse.json(
-        { error: 'Not found', pda: pda.toBase58() },
-        { status: 404 }
-      );
+      return NextResponse.json({ active: false, reason: 'not_found' });
     }
     
-    return NextResponse.json({ pda: pda.toBase58(), account });
+    // Check if revoked
+    if (account.revoked) {
+      return NextResponse.json({ active: false, reason: 'revoked' });
+    }
+    
+    // Check if expired
+    const now = BigInt(Date.now() / 1000);
+    if (account.validUntil < now) {
+      return NextResponse.json({ active: false, reason: 'expired' });
+    }
+    
+    // Check territory if provided
+    if (territory && account.territory !== territory) {
+      return NextResponse.json({ active: false, reason: 'territory_mismatch' });
+    }
+    
+    return NextResponse.json({ active: true });
   } catch (e: any) {
     return NextResponse.json(
       { error: e?.message || 'Unknown error' },

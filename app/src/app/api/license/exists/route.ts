@@ -23,14 +23,7 @@ export async function POST(request: Request) {
     const pda = deriveLicensePda(program.programId, beatHashHex);
     const account = await (program.account as any).License.fetchNullable(pda);
     
-    if (!account) {
-      return NextResponse.json(
-        { error: 'Not found', pda: pda.toBase58() },
-        { status: 404 }
-      );
-    }
-    
-    return NextResponse.json({ pda: pda.toBase58(), account });
+    return NextResponse.json({ exists: account !== null });
   } catch (e: any) {
     return NextResponse.json(
       { error: e?.message || 'Unknown error' },
