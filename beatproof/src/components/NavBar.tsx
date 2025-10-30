@@ -10,7 +10,11 @@ const shortenAddress = (value: string) => {
   return `${value.slice(0, 4)}…${value.slice(-4)}`;
 };
 
-export default function NavBar() {
+type NavBarProps = {
+  onMissingWallet?: () => void;
+};
+
+export default function NavBar({ onMissingWallet }: NavBarProps = {}) {
   const { connected, publicKey } = useWallet();
 
   const walletAddress = useMemo(() => {
@@ -40,7 +44,7 @@ export default function NavBar() {
             {shortenAddress(walletAddress)}
           </span>
         )}
-        <ConnectWalletButton />
+        <ConnectWalletButton onMissingWallet={onMissingWallet} />
       </div>
     </motion.header>
   );

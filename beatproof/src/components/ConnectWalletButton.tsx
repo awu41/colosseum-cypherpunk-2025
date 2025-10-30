@@ -6,7 +6,11 @@ import { motion } from 'framer-motion';
 
 const SESSION_COOKIE_ENDPOINT = '/api/session';
 
-export default function ConnectWalletButton() {
+type ConnectWalletButtonProps = {
+  onMissingWallet?: () => void;
+};
+
+export default function ConnectWalletButton({ onMissingWallet }: ConnectWalletButtonProps) {
   const { connected, connecting, connect, disconnect, publicKey } = useWallet();
   const [statusMessage, setStatusMessage] = useState('');
   const [sessionMessage, setSessionMessage] = useState('');
@@ -22,6 +26,7 @@ export default function ConnectWalletButton() {
 
       if (typeof window === 'undefined' || !(window as any).phantom?.solana) {
         setStatusMessage('Phantom wallet not detected. Install Phantom to continue.');
+        onMissingWallet?.();
         return;
       }
 

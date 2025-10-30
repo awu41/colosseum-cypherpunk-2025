@@ -8,9 +8,10 @@ type LandingPageProps = {
   onEnter: () => void;
   connecting: boolean;
   statusMessage?: string;
+  onMissingWallet?: () => void;
 };
 
-export default function LandingPage({ onEnter, connecting, statusMessage }: LandingPageProps) {
+export default function LandingPage({ onEnter, connecting, statusMessage, onMissingWallet }: LandingPageProps) {
   return (
     <motion.main
       key="landing-view"
@@ -20,7 +21,7 @@ export default function LandingPage({ onEnter, connecting, statusMessage }: Land
       transition={{ duration: 0.55, ease: 'easeOut' }}
       style={{ display: 'grid', gap: '2.5rem' }}
     >
-      <NavBar />
+      <NavBar onMissingWallet={onMissingWallet} />
       <LandingHero
         onEnter={onEnter}
         connecting={connecting}
