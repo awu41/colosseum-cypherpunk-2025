@@ -1,12 +1,15 @@
 'use client';
 
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { motion } from 'framer-motion';
 
+const SESSION_COOKIE_ENDPOINT = '/api/session';
+
 export default function ConnectWalletButton() {
-  const { connected, connecting, connect, disconnect } = useWallet();
+  const { connected, connecting, connect, disconnect, publicKey } = useWallet();
   const [statusMessage, setStatusMessage] = useState('');
+  const [sessionMessage, setSessionMessage] = useState('');
 
   const handleAction = useCallback(async () => {
     try {
@@ -23,6 +26,54 @@ export default function ConnectWalletButton() {
     }
   }, [connected, connect, disconnect]);
 
+  useEffect(() => {
+    let cancelled = false;
+
+    const syncSession = async () => {
+      try {
+        if (!cancelled) {
+          setSessionMessage('');
+        }
+        if (publicKey) {
+          const response = await fetch(SESSION_COOKIE_ENDPOINT, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ address: publicKey.toBase58() }),
+            credentials: 'include',
+          });
+
+          if (!response.ok) {
+            throw new Error('Failed to persist wallet session.');
+          }
+
+          if (!cancelled) {
+            setSessionMessage('Wallet session cached for backend.');
+          }
+        } else {
+          await fetch(SESSION_COOKIE_ENDPOINT, {
+            method: 'DELETE',
+            credentials: 'include',
+          });
+
+          if (!cancelled) {
+            setSessionMessage('Wallet session cleared.');
+          }
+        }
+      } catch (error) {
+        if (!cancelled) {
+          const message = error instanceof Error ? error.message : 'Unable to update wallet session.';
+          setSessionMessage(message);
+        }
+      }
+    };
+
+    syncSession();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [publicKey]);
+
   return (
     <div>
       <motion.button
@@ -38,6 +89,11 @@ export default function ConnectWalletButton() {
       {statusMessage && (
         <span style={{ display: 'block', marginTop: '0.45rem', color: '#f6d86a', fontSize: '0.75rem' }}>
           {statusMessage}
+        </span>
+      )}
+      {sessionMessage && (
+        <span style={{ display: 'block', marginTop: '0.3rem', color: 'rgba(227, 229, 236, 0.6)', fontSize: '0.7rem' }}>
+          {sessionMessage}
         </span>
       )}
     </div>

@@ -66,7 +66,7 @@ export default function ListingCard({ listing, onBuy, onContact }: { listing: Li
         <iframe
           title={`${listing.title} audio preview`}
           width="100%"
-          height="160"
+          height="100%"
           scrolling="no"
           frameBorder="no"
           allow="autoplay"

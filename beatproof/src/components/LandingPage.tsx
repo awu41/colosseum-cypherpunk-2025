@@ -3,6 +3,7 @@
 import { motion } from 'framer-motion';
 import NavBar from './NavBar';
 import LandingHero from './LandingHero';
+import WalletLoginIsland from './WalletLoginIsland';
 
 export default function LandingPage({ onDevExplore }: { onDevExplore?: () => void }) {
   return (
@@ -16,7 +17,7 @@ export default function LandingPage({ onDevExplore }: { onDevExplore?: () => voi
     >
       <NavBar />
       <LandingHero onDevExplore={onDevExplore} />
+      <WalletLoginIsland />
     </motion.main>
   );
 }
-
