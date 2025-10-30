@@ -11,7 +11,7 @@ export default function ListingCard({ listing, onBuy, onContact }: { listing: Li
 
   return (
     <motion.article
-      className="island island--glow"
+      className="island island--glow listing-card"
       initial={{ opacity: 0, y: 40 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, amount: 0.2 }}
@@ -44,15 +44,15 @@ export default function ListingCard({ listing, onBuy, onContact }: { listing: Li
           transition={{ duration: 0.5, ease: 'easeOut', delay: 0.2 }}
           style={{
             borderRadius: '999px',
-            padding: '0.35rem 0.9rem',
-            fontSize: '0.75rem',
+            padding: '0.25rem 0.75rem',
+            fontSize: '0.68rem',
             letterSpacing: '0.08em',
             textTransform: 'uppercase',
             background: 'rgba(236, 192, 66, 0.12)',
             border: '1px solid rgba(236, 192, 66, 0.22)',
             color: 'rgba(236, 192, 66, 0.85)',
             textAlign: 'center',
-            minWidth: '7.5rem',
+            minWidth: '6.75rem',
             display: 'inline-flex',
             justifyContent: 'center',
             flexWrap: 'wrap',
