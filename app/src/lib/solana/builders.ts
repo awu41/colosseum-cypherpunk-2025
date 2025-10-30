@@ -26,7 +26,7 @@ export interface RevokeLicenseParams {
 /**
  * Build an initialize license instruction
  */
-export function buildInitializeInstruction(params: InitializeLicenseParams) {
+export async function buildInitializeInstruction(params: InitializeLicenseParams) {
   const program = getProgram();
   const issuerKey = new PublicKey(params.issuer);
   const beatHashBytes = Buffer.from(params.beatHashHex, 'hex');
@@ -37,7 +37,7 @@ export function buildInitializeInstruction(params: InitializeLicenseParams) {
   
   const licensePda = deriveLicensePda(program.programId, params.beatHashHex);
   
-  const ix = program.methods
+  const ix = await (program.methods as any)
     .initialize(
       Array.from(beatHashBytes),
       params.termsCid,
@@ -58,12 +58,12 @@ export function buildInitializeInstruction(params: InitializeLicenseParams) {
 /**
  * Build a revoke license instruction
  */
-export function buildRevokeInstruction(params: RevokeLicenseParams) {
+export async function buildRevokeInstruction(params: RevokeLicenseParams) {
   const program = getProgram();
   const issuerKey = new PublicKey(params.issuer);
   const licensePda = deriveLicensePda(program.programId, params.beatHashHex);
   
-  const ix = program.methods
+  const ix = await (program.methods as any)
     .revoke()
     .accounts({
       license: licensePda,
@@ -77,8 +77,8 @@ export function buildRevokeInstruction(params: RevokeLicenseParams) {
 /**
  * Build and serialize a transaction for initialize
  */
-export function buildInitializeTransaction(params: InitializeLicenseParams): string {
-  const ix = buildInitializeInstruction(params);
+export async function buildInitializeTransaction(params: InitializeLicenseParams): Promise<string> {
+  const ix = await buildInitializeInstruction(params);
   const tx = new Transaction().add(ix);
   
   // Note: recentBlockhash and feePayer should be set by the client
@@ -89,8 +89,8 @@ export function buildInitializeTransaction(params: InitializeLicenseParams): str
 /**
  * Build and serialize a transaction for revoke
  */
-export function buildRevokeTransaction(params: RevokeLicenseParams): string {
-  const ix = buildRevokeInstruction(params);
+export async function buildRevokeTransaction(params: RevokeLicenseParams): Promise<string> {
+  const ix = await buildRevokeInstruction(params);
   const tx = new Transaction().add(ix);
   
   // Note: recentBlockhash and feePayer should be set by the client

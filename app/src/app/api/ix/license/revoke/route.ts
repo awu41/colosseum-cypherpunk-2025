@@ -21,7 +21,7 @@ export async function POST(request: Request) {
     
     const { beatHashHex, issuer } = parsed.data;
     
-    const txBase64 = buildRevokeTransaction({
+    const txBase64 = await buildRevokeTransaction({
       beatHashHex,
       issuer,
     });
