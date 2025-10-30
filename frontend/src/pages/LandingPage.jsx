@@ -2,7 +2,7 @@ import { motion } from 'framer-motion';
 import NavBar from '../components/NavBar.jsx';
 import LandingHero from '../components/LandingHero.jsx';
 
-const LandingPage = () => (
+const LandingPage = ({ onDevExplore }) => (
   <motion.main
     key="landing-view"
     initial={{ opacity: 0 }}
@@ -12,7 +12,7 @@ const LandingPage = () => (
     style={{ display: 'grid', gap: '2.5rem' }}
   >
     <NavBar />
-    <LandingHero />
+    <LandingHero onDevExplore={onDevExplore} />
   </motion.main>
 );
 

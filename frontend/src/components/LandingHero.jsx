@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 
-const LandingHero = () => (
+const LandingHero = ({ onDevExplore }) => (
   <motion.section
     className="island island--frosted floating"
     initial={{ opacity: 0, y: 40 }}
@@ -28,6 +28,16 @@ const LandingHero = () => (
         <a className="ghost-button" href="#about" aria-label="Learn more about Solara Soundscapes">
           Learn More
         </a>
+        {onDevExplore && (
+          <button
+            className="ghost-button ghost-button--dev"
+            type="button"
+            onClick={onDevExplore}
+            aria-label="Preview the marketplace without connecting a wallet"
+          >
+            Dev Preview Marketplace
+          </button>
+        )}
       </div>
     </motion.div>
 

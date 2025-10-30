@@ -8,7 +8,7 @@ const shortenAddress = (value) => {
   return `${value.slice(0, 4)}…${value.slice(-4)}`;
 };
 
-const NavBar = ({ showNavLinks = true }) => {
+const NavBar = ({ showNavLinks = true, devMode = false, onExitDev }) => {
   const { connected, publicKey } = useWallet();
 
   const walletAddress = useMemo(() => {
@@ -40,11 +40,22 @@ const NavBar = ({ showNavLinks = true }) => {
       )}
 
       <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap' }}>
+        {devMode && (
+          <span className="wallet-tag wallet-tag--dev" aria-live="polite">
+            <span className="wallet-tag__dot" />
+            Dev Preview
+          </span>
+        )}
         {walletAddress && (
           <span className="wallet-tag" aria-live="polite">
             <span className="wallet-tag__dot" />
             {shortenAddress(walletAddress)}
           </span>
+        )}
+        {devMode && !walletAddress && onExitDev && (
+          <button className="ghost-button ghost-button--dev" type="button" onClick={onExitDev}>
+            Exit Dev Mode
+          </button>
         )}
         <ConnectWalletButton />
       </div>

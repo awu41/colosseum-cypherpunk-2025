@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { AnimatePresence } from 'framer-motion';
 import FloatingBackground from './components/FloatingBackground.jsx';
@@ -8,10 +8,28 @@ import MarketplacePage from './pages/MarketplacePage.jsx';
 const App = () => {
   const { connected } = useWallet();
   const [activeView, setActiveView] = useState('landing');
+  const [devMode, setDevMode] = useState(false);
+
+  const handleEnterDevMode = useCallback(() => {
+    setDevMode(true);
+    setActiveView('marketplace');
+  }, []);
+
+  const handleExitDevMode = useCallback(() => {
+    setDevMode(false);
+    if (!connected) {
+      setActiveView('landing');
+    }
+  }, [connected]);
 
   useEffect(() => {
-    setActiveView(connected ? 'marketplace' : 'landing');
-  }, [connected]);
+    if (connected) {
+      setDevMode(false);
+      setActiveView('marketplace');
+    } else if (!devMode) {
+      setActiveView('landing');
+    }
+  }, [connected, devMode]);
 
   return (
     <div className="app-shell">
@@ -19,9 +37,13 @@ const App = () => {
       <div className="content-layer">
         <AnimatePresence mode="wait">
           {activeView === 'landing' ? (
-            <LandingPage key="landing" />
+            <LandingPage key="landing" onDevExplore={handleEnterDevMode} />
           ) : (
-            <MarketplacePage key="marketplace" />
+            <MarketplacePage
+              key="marketplace"
+              devMode={devMode}
+              onExitDev={handleExitDevMode}
+            />
           )}
         </AnimatePresence>
       </div>

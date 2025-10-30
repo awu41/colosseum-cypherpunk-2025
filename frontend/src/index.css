@@ -219,6 +219,18 @@ button {
   background: rgba(16, 20, 28, 0.85);
 }
 
+.ghost-button--dev {
+  border-style: dashed;
+  border-color: rgba(236, 192, 66, 0.5);
+  color: rgba(246, 216, 106, 0.94);
+  background: rgba(12, 14, 18, 0.58);
+}
+
+.ghost-button--dev:hover {
+  border-color: rgba(236, 192, 66, 0.72);
+  background: rgba(18, 21, 30, 0.92);
+}
+
 .section-frame {
   margin-top: clamp(3rem, 6vw, 5rem);
   display: grid;
@@ -375,6 +387,15 @@ button {
   box-shadow: 0 0 8px rgba(236, 192, 66, 0.6);
 }
 
+.wallet-tag--dev {
+  background: rgba(236, 192, 66, 0.12);
+  border-color: rgba(236, 192, 66, 0.35);
+  color: rgba(236, 234, 232, 0.9);
+  box-shadow:
+    inset 0 1px 0 rgba(236, 192, 66, 0.22),
+    0 0 16px rgba(236, 192, 66, 0.16);
+}
+
 .nav-shell {
   position: relative;
   display: flex;
@@ -445,6 +466,24 @@ button {
   color: rgba(227, 229, 236, 0.65);
   font-size: 1rem;
   margin: 0;
+}
+
+.dev-banner {
+  border-radius: 18px;
+  border: 1px dashed rgba(236, 192, 66, 0.38);
+  background: rgba(12, 14, 18, 0.7);
+  padding: 0.9rem 1.15rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.85rem;
+  align-items: center;
+  color: rgba(236, 234, 232, 0.78);
+  box-shadow: inset 0 1px 0 rgba(236, 192, 66, 0.18);
+}
+
+.dev-banner span {
+  flex: 1 1 200px;
+  min-width: 160px;
 }
 
 @media (max-width: 768px) {

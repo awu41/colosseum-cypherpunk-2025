@@ -5,7 +5,7 @@ import NavBar from '../components/NavBar.jsx';
 import MarketplaceGrid from '../components/MarketplaceGrid.jsx';
 import { listings } from '../data/listings.js';
 
-const MarketplacePage = () => {
+const MarketplacePage = ({ devMode = false, onExitDev }) => {
   const { publicKey } = useWallet();
   const [actionFeedback, setActionFeedback] = useState('');
 
@@ -43,7 +43,7 @@ const MarketplacePage = () => {
       transition={{ duration: 0.55, ease: 'easeOut' }}
       style={{ display: 'grid', gap: '2.8rem', paddingBottom: '6rem' }}
     >
-      <NavBar showNavLinks={false} />
+      <NavBar showNavLinks={false} devMode={devMode} onExitDev={onExitDev} />
 
       <motion.section
         className='island floating'
@@ -59,6 +59,21 @@ const MarketplacePage = () => {
               on Solana with frictionless wallet flows.
             </p>
           </div>
+          {devMode && (
+            <div className='dev-banner' role='status' aria-live='polite'>
+              <span>Dev preview enabled. Wallet interactions are mocked.</span>
+              {onExitDev && (
+                <button
+                  className='ghost-button ghost-button--dev'
+                  type='button'
+                  onClick={onExitDev}
+                  aria-label='Return to the landing experience'
+                >
+                  Exit Dev Mode
+                </button>
+              )}
+            </div>
+          )}
 
           <div className='metrics-row'>
             <div className='metric-card'>
