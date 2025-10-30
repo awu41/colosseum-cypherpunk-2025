@@ -6,7 +6,7 @@ This document captures the current state of the backend logic that lives inside 
 
 - **Framework**: Next.js 14 App Router. Backend runs as serverless API routes colocated with the UI.
 - **Program bindings**: `src/lib/anchor/program.ts` creates an Anchor `Program` using the generated IDL in `src/idl/soundcloud_license.json`. RPC endpoint and program ID come from environment (`ANCHOR_PROVIDER_URL`, `PROGRAM_ID`).
-- **Session handling**: `src/lib/auth/session.ts` reads the Phantom wallet cookie (`beatproof_wallet`), validates it as a `PublicKey`, and exposes helpers to API routes.
+- **Session handling**: `src/lib/auth/session.ts` reads the Phantom wallet cookie (`beatproof-session`, legacy `beatproof_wallet`), validates it as a `PublicKey`, and exposes helpers to API routes.
 - **Utilities**:
   - `src/lib/solana/pda.ts` derives the license PDA (`seeds: "license" + beatHash + licensee`) and the guard PDA (`"license_guard" + beatHash`).
   - `src/lib/solana/builders.ts` (async) builds initialize/revoke `TransactionInstruction`s and base64 serialized transactions and injects the session wallet for issuer/licensee fields.
@@ -26,6 +26,7 @@ This document captures the current state of the backend logic that lives inside 
 | `/api/ix/license/initialize` | `POST { beatHashHex, beatMint, termsCid, licenseType, territory, validUntil, issuer }` | Builds a base64 transaction for initializing a license scoped to the active wallet. Client still sets `recentBlockhash`/`feePayer` and signs. |
 | `/api/ix/license/revoke` | `POST { beatHashHex, licensee }` | Builds a revoke transaction for the buyer-specific license account, requiring the issuer session to be active. |
 | `/api/tx/simulate` | `POST { txBase64 }` | Deserializes a transaction, simulates it on the configured cluster, and returns execution logs / errors. |
+| `/api/session` | `POST { address }`, `DELETE` | Sets or clears the httpOnly wallet cookie used by backend routes. |
 | `/api/soundcloud/auth-url` | `GET ?state&scope&redirectUri` | Returns the OAuth authorize URL for SoundCloud, supporting optional state/scope overrides. |
 | `/api/soundcloud/token` | `POST { code, redirectUri? }` | Exchanges an authorization code for a SoundCloud access token (non-expiring scope by default). |
 | `/api/soundcloud/verify-track` | `POST { accessToken, trackId?|trackUrl?, expectedUserId?, expectedBeatHash? }` | Confirms the authenticated SoundCloud user owns the target track and optionally checks that metadata references a beat hash. |

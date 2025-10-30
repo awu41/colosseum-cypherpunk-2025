@@ -1,7 +1,7 @@
 import { cookies } from 'next/headers';
 import { PublicKey } from '@solana/web3.js';
 
-export const WALLET_COOKIE_NAME = 'beatproof_wallet';
+const WALLET_COOKIE_CANDIDATES = ['beatproof-session', 'beatproof_wallet'];
 
 export class WalletSessionError extends Error {
   status: number;
@@ -15,7 +15,10 @@ export class WalletSessionError extends Error {
 
 export function requireWalletFromSession(): string {
   const cookieStore = cookies();
-  const value = cookieStore.get(WALLET_COOKIE_NAME)?.value;
+  const value =
+    WALLET_COOKIE_CANDIDATES.map((name) => cookieStore.get(name)?.value).find(
+      (v): v is string => Boolean(v),
+    );
 
   if (!value) {
     throw new WalletSessionError('Wallet session not found');
@@ -30,4 +33,3 @@ export function requireWalletFromSession(): string {
 
   return value;
 }
-

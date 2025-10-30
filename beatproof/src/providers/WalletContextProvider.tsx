@@ -1,19 +1,17 @@
 'use client';
 
-import { useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { clusterApiUrl } from '@solana/web3.js';
 import { ConnectionProvider, WalletProvider } from '@solana/wallet-adapter-react';
+import type { Adapter } from '@solana/wallet-adapter-base';
 import { PhantomWalletAdapter } from '@solana/wallet-adapter-wallets';
 
 export default function WalletContextProvider({ children }: { children: React.ReactNode }) {
   const endpoint = useMemo(() => clusterApiUrl('devnet'), []);
+  const [wallets, setWallets] = useState<Adapter[]>([]);
 
-  const wallets = useMemo(() => {
-    if (typeof window === 'undefined') {
-      return [];
-    }
-
-    return [new PhantomWalletAdapter()];
+  useEffect(() => {
+    setWallets([new PhantomWalletAdapter()]);
   }, []);
 
   return (
@@ -24,4 +22,3 @@ export default function WalletContextProvider({ children }: { children: React.Re
     </ConnectionProvider>
   );
 }
-
