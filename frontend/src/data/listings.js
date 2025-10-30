@@ -1,0 +1,38 @@
+export const listings = [
+  {
+    id: 'aurora-drift',
+    title: 'Aurora Drift',
+    artist: 'Lyra Nyx',
+    price: '14.5',
+    currency: 'SOL',
+    vibes: 'ambient',
+    soundcloudUrl: 'https://api.soundcloud.com/tracks/1202021175',
+  },
+  {
+    id: 'versus-waves',
+    title: 'Versus Waves',
+    artist: 'Binary Bloom',
+    price: '9.2',
+    currency: 'SOL',
+    vibes: 'glitch soul',
+    soundcloudUrl: 'https://api.soundcloud.com/tracks/135310682',
+  },
+  {
+    id: 'tidal-ritual',
+    title: 'Tidal Ritual',
+    artist: 'Oracle Tide',
+    price: '18.0',
+    currency: 'SOL',
+    vibes: 'ritual bass',
+    soundcloudUrl: 'https://api.soundcloud.com/tracks/51069902',
+  },
+  {
+    id: 'nebula-hums',
+    title: 'Nebula Hums',
+    artist: 'Helio Choir',
+    price: '11.7',
+    currency: 'SOL',
+    vibes: 'astro choir',
+    soundcloudUrl: 'https://api.soundcloud.com/tracks/273961044',
+  },
+];
