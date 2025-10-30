@@ -5,6 +5,7 @@ import { NextResponse } from 'next/server';
 
 const Body = z.object({ 
   beatHashHex: z.string().length(64),
+  licensee: z.string(),
   territory: z.string().optional(),
 });
 
@@ -20,10 +21,10 @@ export async function POST(request: Request) {
       );
     }
     
-    const { beatHashHex, territory } = parsed.data;
+    const { beatHashHex, licensee, territory } = parsed.data;
     
     const program = getProgram();
-    const pda = deriveLicensePda(program.programId, beatHashHex);
+    const pda = deriveLicensePda(program.programId, beatHashHex, licensee);
     const account = await (program.account as any).license.fetchNullable(pda);
     
     if (!account) {
@@ -37,7 +38,8 @@ export async function POST(request: Request) {
     
     // Check if expired
     const now = BigInt(Date.now() / 1000);
-    if (account.validUntil < now) {
+    const validUntil = BigInt(account.validUntil.toString());
+    if (validUntil < now) {
       return NextResponse.json({ active: false, reason: 'expired' });
     }
     
@@ -45,8 +47,16 @@ export async function POST(request: Request) {
     if (territory && account.territory !== territory) {
       return NextResponse.json({ active: false, reason: 'territory_mismatch' });
     }
+
+    const licenseType =
+      'exclusive' in account.licenseType ? 'Exclusive' : 'NonExclusive';
     
-    return NextResponse.json({ active: true });
+    return NextResponse.json({
+      active: true,
+      licenseType,
+      validUntil: validUntil.toString(),
+      territory: account.territory,
+    });
   } catch (e: any) {
     return NextResponse.json(
       { error: e?.message || 'Unknown error' },
@@ -54,4 +64,3 @@ export async function POST(request: Request) {
     );
   }
 }
-

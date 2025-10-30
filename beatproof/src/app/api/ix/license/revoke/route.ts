@@ -5,6 +5,7 @@ import { NextResponse } from 'next/server';
 const Body = z.object({
   beatHashHex: z.string().length(64),
   issuer: z.string(), // PublicKey as base58
+  licensee: z.string(), // PublicKey as base58
 });
 
 export async function POST(request: Request) {
@@ -19,11 +20,12 @@ export async function POST(request: Request) {
       );
     }
     
-    const { beatHashHex, issuer } = parsed.data;
+    const { beatHashHex, issuer, licensee } = parsed.data;
     
     const txBase64 = await buildRevokeTransaction({
       beatHashHex,
       issuer,
+      licensee,
     });
     
     return NextResponse.json({
@@ -37,4 +39,3 @@ export async function POST(request: Request) {
     );
   }
 }
-

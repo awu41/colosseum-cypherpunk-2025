@@ -3,7 +3,10 @@ import { getProgram } from '@/lib/anchor/program';
 import { deriveLicensePda } from '@/lib/solana/pda';
 import { NextResponse } from 'next/server';
 
-const Body = z.object({ beatHashHex: z.string().length(64) });
+const Body = z.object({
+  beatHashHex: z.string().length(64),
+  licensee: z.string(),
+});
 
 export async function POST(request: Request) {
   try {
@@ -17,10 +20,10 @@ export async function POST(request: Request) {
       );
     }
     
-    const { beatHashHex } = parsed.data;
+    const { beatHashHex, licensee } = parsed.data;
     
     const program = getProgram();
-    const pda = deriveLicensePda(program.programId, beatHashHex);
+    const pda = deriveLicensePda(program.programId, beatHashHex, licensee);
     const account = await (program.account as any).license.fetchNullable(pda);
     
     return NextResponse.json({ exists: account !== null });
@@ -31,4 +34,3 @@ export async function POST(request: Request) {
     );
   }
 }
-

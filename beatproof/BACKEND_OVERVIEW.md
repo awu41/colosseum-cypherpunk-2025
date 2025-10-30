@@ -18,11 +18,12 @@ This document captures the current state of the backend logic that lives inside 
 | Route | Method & Body | Purpose |
 |-------|---------------|---------|
 | `/api/health` | `GET` | Simple liveness probe returning `{ ok: true }`. Useful for uptime checks and Vercel health monitoring. |
-| `/api/license-get` | `POST { beatHashHex }` | Fetches the on-chain license account. Returns the derived PDA and raw account data. 404 if the account does not exist. |
-| `/api/license/exists` | `POST { beatHashHex }` | Boolean existence check for a license PDA without returning data. |
-| `/api/license/has-active` | `POST { beatHashHex, territory? }` | Validates license status: not revoked, not expired, optional territory match. Returns `{ active: boolean, reason? }`. |
-| `/api/ix/license/initialize` | `POST { beatHashHex, termsCid, licenseType, territory, validUntil, issuer }` | Builds a base64 serialized transaction for the `initialize` instruction. Caller must set `recentBlockhash`/`feePayer`, sign, and submit. |
-| `/api/ix/license/revoke` | `POST { beatHashHex, issuer }` | Builds a base64 serialized transaction for the `revoke` instruction. Same client-side responsibilities as above. |
+| `/api/license-get` | `POST { beatHashHex, licensee }` | Fetches the license PDA scoped to a given buyer. Returns PDA + normalized account data. |
+| `/api/license/exists` | `POST { beatHashHex, licensee }` | Boolean existence check for a specific beat/buyer pair. |
+| `/api/license/has-active` | `POST { beatHashHex, licensee, territory? }` | Validates a buyer’s license: revoked/expired checks and optional territory match. |
+| `/api/license/guard` | `POST { beatHashHex }` | Reads the beat-level guard to see if an exclusive slot is already occupied. |
+| `/api/ix/license/initialize` | `POST { beatHashHex, beatMint, termsCid, licenseType, territory, validUntil, issuer, licensee }` | Builds a base64 transaction for initializing a license scoped to a buyer. Client still sets `recentBlockhash`/`feePayer` and signs. |
+| `/api/ix/license/revoke` | `POST { beatHashHex, issuer, licensee }` | Builds a revoke transaction for the buyer-specific license account. |
 | `/api/tx/simulate` | `POST { txBase64 }` | Deserializes a transaction, simulates it on the configured cluster, and returns execution logs / errors. |
 | `/api/soundcloud/auth-url` | `GET ?state&scope&redirectUri` | Returns the OAuth authorize URL for SoundCloud, supporting optional state/scope overrides. |
 | `/api/soundcloud/token` | `POST { code, redirectUri? }` | Exchanges an authorization code for a SoundCloud access token (non-expiring scope by default). |
@@ -39,6 +40,7 @@ All endpoints share common traits:
 - ✅ Can generate transaction payloads for clients to sign (initialize/revoke).
 - ✅ Can simulate transactions for pre-flight checks.
 - ✅ Can complete the SoundCloud OAuth handshake and verify track ownership before license creation.
+- ✅ Supports multi-buyer licensing with buyer-scoped PDAs and beat-level exclusivity guards.
 - ⚠️ No persistence beyond on-chain data (no PostgreSQL/Prisma layer yet).
 - ⚠️ No authentication/authorization: any caller can hit the endpoints.
 - ⚠️ No rate limiting or caching; relies on RPC throughput.
@@ -48,7 +50,7 @@ All endpoints share common traits:
 
 1. **Program capability parity**: confirm the Anchor program covers all desired license features (expiration enforcement, SoundCloud binding, exclusivity rules). Add new IDL + builders as program evolves.
 2. **Auth & Access Control**: introduce wallets/SIWS or API keys so only authenticated producers/artists hit sensitive endpoints.
-3. **SoundCloud integration**: persist verification artifacts and wire verify-track results into the mint flow (block initialize when ownership/hash checks fail).
+3. **SoundCloud integration**: persist verification artifacts and wire verify-track results plus NFT ownership checks into the mint flow (block initialize when ownership/hash checks fail).
 4. **Persistence layer**: add Prisma/PostgreSQL (or Supabase) for off-chain metadata, audit logs, and linkage between SoundCloud IDs and license PDAs.
 5. **Validation hardening**: enforce stronger schema checks (e.g., CID format, territory enums), add structured error codes, and consider logging.
 6. **Operational tooling**: instrument Prometheus/Vercel logs, add rate limiting, and provide staging configuration (separate RPC URLs/program IDs).

@@ -4,11 +4,13 @@ import { NextResponse } from 'next/server';
 
 const Body = z.object({
   beatHashHex: z.string().length(64),
+  beatMint: z.string(),
   termsCid: z.string(),
   licenseType: z.enum(['Exclusive', 'NonExclusive']),
   territory: z.string(),
   validUntil: z.string().or(z.number()).transform((val) => BigInt(val)),
   issuer: z.string(), // PublicKey as base58
+  licensee: z.string(), // PublicKey as base58
 });
 
 export async function POST(request: Request) {
@@ -25,20 +27,24 @@ export async function POST(request: Request) {
     
     const {
       beatHashHex,
+      beatMint,
       termsCid,
       licenseType,
       territory,
       validUntil,
       issuer,
+      licensee,
     } = parsed.data;
     
     const txBase64 = await buildInitializeTransaction({
       beatHashHex,
+      beatMint,
       termsCid,
       licenseType,
       territory,
       validUntil,
       issuer,
+      licensee,
     });
     
     return NextResponse.json({
@@ -52,4 +58,3 @@ export async function POST(request: Request) {
     );
   }
 }
-
