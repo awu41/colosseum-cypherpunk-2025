@@ -21,7 +21,7 @@ export async function POST(request: Request) {
     
     const program = getProgram();
     const pda = deriveLicensePda(program.programId, beatHashHex);
-    const account = await program.account.license.fetchNullable(pda);
+    const account = await (program.account as any).License.fetchNullable(pda);
     
     if (!account) {
       return NextResponse.json(
