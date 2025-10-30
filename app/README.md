@@ -1,6 +1,6 @@
-# Beatproof Frontend
+# Beatproof - Solana Audio NFT Marketplace
 
-Immersive floating-island interface for a Solana-powered audio NFT marketplace. Built with Next.js, React, TypeScript, Framer Motion, and Solana wallet adapters.
+Immersive floating-island interface for a Solana-powered audio NFT marketplace. Built with Next.js, React, TypeScript, Framer Motion, Solana wallet adapters, and a serverless API backend.
 
 ## Features
 
@@ -25,12 +25,25 @@ npm run dev
 - `src/app/` – Next.js app router pages and layouts
   - `page.tsx` – Main landing page with wallet integration
   - `layout.tsx` – Root layout with WalletContextProvider
-  - `api/` – API routes for health checks and license fetching
+  - `api/` – Serverless API endpoints (see API.md)
 - `src/components/` – Reusable React components
   - All components are client components with 'use client' directive
 - `src/data/` – Mock data and listings
-- `src/lib/` – Utility functions for Solana and Anchor
+- `src/lib/` – Utility functions for Solana, Anchor, and API builders
 - `src/providers/` – React context providers (Wallet integration)
+
+## Backend API
+
+See `API.md` for complete API documentation.
+
+**Core Endpoints:**
+- `GET /api/health` - Health check
+- `POST /api/license/get` - Fetch license by beat hash
+- `POST /api/license/exists` - Check if license exists
+- `POST /api/license/has-active` - Check if license is active
+- `POST /api/ix/license/initialize` - Build initialize transaction
+- `POST /api/ix/license/revoke` - Build revoke transaction
+- `POST /api/tx/simulate` - Simulate transaction
 
 ## Migration from Vite
 
