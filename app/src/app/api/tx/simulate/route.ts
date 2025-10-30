@@ -30,7 +30,7 @@ export async function POST(request: Request) {
     
     // Simulate the transaction
     const simulation = await connection.simulateTransaction(tx, {
-      replaceRecentBlockhash: true,
+      commitment: 'confirmed',
       sigVerify: false,
     });
     
