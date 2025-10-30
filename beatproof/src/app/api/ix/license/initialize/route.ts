@@ -43,7 +43,6 @@ export async function POST(request: Request) {
       territory,
       validUntil,
       issuer,
-      licensee,
     } = parsed.data;
     
     const txBase64 = await buildInitializeTransaction({
