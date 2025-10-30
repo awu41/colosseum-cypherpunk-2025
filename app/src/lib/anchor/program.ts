@@ -1,6 +1,6 @@
 import * as anchor from "@coral-xyz/anchor";
 import { Connection, PublicKey } from "@solana/web3.js";
-import idl from "../../idl/soundcloud_license.json" assert { type: "json" };
+import idl from "@/idl/soundcloud_license.json";
 
 export function getProgram() {
   const rpcUrl = process.env.ANCHOR_PROVIDER_URL || "https://api.devnet.solana.com";

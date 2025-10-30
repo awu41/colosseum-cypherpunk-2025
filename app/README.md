@@ -1,6 +1,6 @@
 # Beatproof Frontend
 
-Immersive floating-island interface for a Solana-powered audio NFT marketplace. Built with React, Vite, Framer Motion, and Solana wallet adapters.
+Immersive floating-island interface for a Solana-powered audio NFT marketplace. Built with Next.js, React, TypeScript, Framer Motion, and Solana wallet adapters.
 
 ## Features
 
@@ -16,16 +16,30 @@ npm install
 npm run dev
 ```
 
-- Development server: `http://localhost:5173`
+- Development server: `http://localhost:3000`
 - Build for production: `npm run build`
-- Preview production build: `npm run preview`
+- Start production server: `npm start`
 
-## Key Files
+## Project Structure
 
-- `src/App.jsx` – toggles landing vs. marketplace based on wallet connection.
-- `src/components/FloatingBackground.jsx` – gold line animations + spinning disk.
-- `src/pages/LandingPage.jsx` / `src/pages/MarketplacePage.jsx` – primary screens.
-- `src/data/listings.js` – mock NFT listing metadata and SoundCloud track URLs.
+- `src/app/` – Next.js app router pages and layouts
+  - `page.tsx` – Main landing page with wallet integration
+  - `layout.tsx` – Root layout with WalletContextProvider
+  - `api/` – API routes for health checks and license fetching
+- `src/components/` – Reusable React components
+  - All components are client components with 'use client' directive
+- `src/data/` – Mock data and listings
+- `src/lib/` – Utility functions for Solana and Anchor
+- `src/providers/` – React context providers (Wallet integration)
+
+## Migration from Vite
+
+This project has been migrated from Vite to Next.js 14 with:
+- App Router architecture
+- TypeScript support
+- Server and Client components
+- API routes for backend integration
+- Same UI/UX and functionality
 
 ## Next Steps
 

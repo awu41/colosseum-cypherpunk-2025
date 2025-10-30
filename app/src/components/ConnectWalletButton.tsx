@@ -1,8 +1,10 @@
+'use client';
+
 import { useCallback, useState } from 'react';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { motion } from 'framer-motion';
 
-const ConnectWalletButton = () => {
+export default function ConnectWalletButton() {
   const { connected, connecting, connect, disconnect } = useWallet();
   const [statusMessage, setStatusMessage] = useState('');
 
@@ -16,8 +18,8 @@ const ConnectWalletButton = () => {
       }
 
       await connect();
-    } catch (error) {
-      setStatusMessage(error.message ?? 'Unable to reach Phantom wallet.');
+    } catch (error: any) {
+      setStatusMessage(error?.message ?? 'Unable to reach Phantom wallet.');
     }
   }, [connected, connect, disconnect]);
 
@@ -40,6 +42,5 @@ const ConnectWalletButton = () => {
       )}
     </div>
   );
-};
+}
 
-export default ConnectWalletButton;

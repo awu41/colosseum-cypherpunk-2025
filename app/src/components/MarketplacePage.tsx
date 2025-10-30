@@ -1,26 +1,27 @@
+'use client';
+
 import { useCallback, useEffect, useState } from 'react';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { AnimatePresence, motion } from 'framer-motion';
-import NavBar from '../components/NavBar.jsx';
-import MarketplaceGrid from '../components/MarketplaceGrid.jsx';
-import { listings } from '../data/listings.js';
+import NavBar from './NavBar';
+import MarketplaceGrid from './MarketplaceGrid';
+import { listings } from '@/data/listings';
 
-const MarketplacePage = ({ devMode = false, onExitDev }) => {
+export default function MarketplacePage({ devMode = false, onExitDev }: { devMode?: boolean; onExitDev?: () => void }) {
   const { publicKey } = useWallet();
   const [actionFeedback, setActionFeedback] = useState('');
 
   const handleBuy = useCallback(
-    (listing) => {
+    (listing: typeof listings[0]) => {
       setActionFeedback(
         `Buy action queued for ${listing.title} at ${listing.price} ${listing.currency}. (Mock transaction)`
       );
-      // TODO: integrate on-chain instruction and transaction confirmation.
       console.info('Buy listing request', { listing, owner: publicKey?.toBase58() });
     },
     [publicKey]
   );
 
-  const handleContact = useCallback((listing) => {
+  const handleContact = useCallback((listing: typeof listings[0]) => {
     setActionFeedback(`Contact request sent to ${listing.artist}. (Placeholder interaction)`);
     console.info('Contact artist request', { listing, owner: publicKey?.toBase58() });
   }, [publicKey]);
@@ -128,6 +129,5 @@ const MarketplacePage = ({ devMode = false, onExitDev }) => {
       </AnimatePresence>
     </motion.main>
   );
-};
+}
 
-export default MarketplacePage;

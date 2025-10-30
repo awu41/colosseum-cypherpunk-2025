@@ -1,11 +1,13 @@
+'use client';
+
 import { useCallback, useEffect, useState } from 'react';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { AnimatePresence } from 'framer-motion';
-import FloatingBackground from './components/FloatingBackground.jsx';
-import LandingPage from './pages/LandingPage.jsx';
-import MarketplacePage from './pages/MarketplacePage.jsx';
+import FloatingBackground from '@/components/FloatingBackground';
+import LandingPage from '@/components/LandingPage';
+import MarketplacePage from '@/components/MarketplacePage';
 
-const App = () => {
+export default function Home() {
   const { connected } = useWallet();
   const [activeView, setActiveView] = useState('landing');
   const [devMode, setDevMode] = useState(false);
@@ -49,6 +51,5 @@ const App = () => {
       </div>
     </div>
   );
-};
+}
 
-export default App;

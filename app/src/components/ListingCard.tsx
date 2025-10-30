@@ -1,6 +1,18 @@
+'use client';
+
 import { motion, useCycle } from 'framer-motion';
 
-const ListingCard = ({ listing, onBuy, onContact }) => {
+type Listing = {
+  id: string;
+  title: string;
+  artist: string;
+  price: string;
+  currency: string;
+  vibes: string;
+  soundcloudUrl: string;
+};
+
+export default function ListingCard({ listing, onBuy, onContact }: { listing: Listing; onBuy: (listing: Listing) => void; onContact: (listing: Listing) => void }) {
   const [glimmer, cycleGlimmer] = useCycle(
     { boxShadow: '0 0 0 rgba(236, 192, 66, 0)' },
     { boxShadow: '0 0 22px rgba(236, 192, 66, 0.35)' }
@@ -91,6 +103,5 @@ const ListingCard = ({ listing, onBuy, onContact }) => {
       </footer>
     </motion.article>
   );
-};
+}
 
-export default ListingCard;

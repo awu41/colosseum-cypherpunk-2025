@@ -1,14 +1,16 @@
+'use client';
+
 import { useMemo } from 'react';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { motion } from 'framer-motion';
-import ConnectWalletButton from './ConnectWalletButton.jsx';
+import ConnectWalletButton from './ConnectWalletButton';
 
-const shortenAddress = (value) => {
+const shortenAddress = (value: string) => {
   if (!value) return '';
   return `${value.slice(0, 4)}…${value.slice(-4)}`;
 };
 
-const NavBar = ({ devMode = false, onExitDev }) => {
+export default function NavBar({ devMode = false, onExitDev }: { devMode?: boolean; onExitDev?: () => void }) {
   const { connected, publicKey } = useWallet();
 
   const walletAddress = useMemo(() => {
@@ -53,6 +55,5 @@ const NavBar = ({ devMode = false, onExitDev }) => {
       </div>
     </motion.header>
   );
-};
+}
 
-export default NavBar;
