@@ -15,6 +15,11 @@ export default function Home() {
       return;
     }
 
+    if (typeof window === 'undefined' || !(window as any).phantom?.solana) {
+      setLandingStatus('Phantom wallet not detected. Install Phantom to continue.');
+      return;
+    }
+
     try {
       setLandingStatus('');
       await connect();

@@ -442,7 +442,7 @@ button {
 
 .nav-actions {
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   gap: 1rem;
   flex-wrap: wrap;
 }

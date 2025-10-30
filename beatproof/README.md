@@ -8,6 +8,18 @@ Immersive floating-island interface for a Solana-powered audio NFT marketplace. 
 - Phantom wallet connect/disconnect powered by `@solana/wallet-adapter-react`.
 - Mock marketplace grid with SoundCloud embeds, buy/contact actions, and floating tile motion.
 - Dedicated `/sell` flow for submitting new listings with SoundCloud + Telegram metadata.
+- Phantom wallet login creates a signed-in session cookie for backend API calls.
+
+## Wallet Session Flow
+
+When a user connects Phantom, the app:
+
+1. Calls `connect()` from `@solana/wallet-adapter-react`.
+2. On success, posts the wallet address to `/api/session`.
+3. The API route stores the address in an HTTP-only cookie `beatproof-session` (7 day TTL).
+4. Disconnecting clears the cookie via a DELETE request.
+
+All subsequent backend requests can read `beatproof-session` to identify the user; no private keys or signatures are stored.
 - Responsive layout, dark accessibility-conscious palette, and reduced-motion fallbacks.
 
 ## Getting Started

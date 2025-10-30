@@ -20,6 +20,11 @@ export default function ConnectWalletButton() {
         return;
       }
 
+      if (typeof window === 'undefined' || !(window as any).phantom?.solana) {
+        setStatusMessage('Phantom wallet not detected. Install Phantom to continue.');
+        return;
+      }
+
       await connect();
     } catch (error: any) {
       setStatusMessage(error?.message ?? 'Unable to reach Phantom wallet.');
@@ -99,4 +104,3 @@ export default function ConnectWalletButton() {
     </div>
   );
 }
-
