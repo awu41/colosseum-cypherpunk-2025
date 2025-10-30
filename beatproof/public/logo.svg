@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120">
+  <defs>
+    <linearGradient id="beatproof-gold" gradientTransform="rotate(115)">
+      <stop offset="0%" stop-color="#fbeab8" />
+      <stop offset="45%" stop-color="#f3cb6a" />
+      <stop offset="100%" stop-color="#b37b2d" />
+    </linearGradient>
+    <linearGradient id="beatproof-inner" gradientTransform="rotate(120)">
+      <stop offset="0%" stop-color="#fbeab8" />
+      <stop offset="100%" stop-color="#d59f3e" />
+    </linearGradient>
+  </defs>
+  <rect width="120" height="120" rx="28" fill="#020203" />
+  <circle cx="60" cy="60" r="36" fill="none" stroke="url(#beatproof-gold)" stroke-width="6" stroke-linecap="round" />
+  <circle cx="60" cy="60" r="11" fill="url(#beatproof-inner)" />
+  <path
+    d="M82 26c-4.2 13.4-6.3 22.8-6.3 28.2 0 4.3 2 6.6 6.4 11 4.7 4.6 6.9 9.2 6.9 15.2 0 12-9.6 20.8-22 20.8-2.4 0-4.7-.2-6.9-.7-1.8-.4-2.9-2.1-2.5-3.9.4-1.8 2.1-2.9 3.9-2.5 2 .5 4 .7 5.6.7 7 0 12.2-5 12.2-11.6 0-3.5-1.2-6.5-4.6-9.9l-.6-.6c-4.6-4.5-8.5-8.4-8.5-16 0-5.7 1.9-14.3 5.8-26.1 0 0 .2-.7.2-.8 0-2 1.6-3.6 3.6-3.6 2 0 3.6 1.6 3.6 3.6 0 .7-.2 1.2-.4 2z"
+    fill="url(#beatproof-gold)"
+  />
+  <path
+    d="M63.5 86.4c2.6 1.5 4.2 4.3 4.2 7.5 0 4.8-3.8 8.6-8.6 8.6s-8.6-3.8-8.6-8.6c0-4.5 3.5-8.2 7.9-8.6"
+    fill="none"
+    stroke="url(#beatproof-gold)"
+    stroke-width="5"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  />
+  <path
+    d="M40.5 54c2.1-10.9 6.4-18.6 13-23.4"
+    fill="none"
+    stroke="url(#beatproof-gold)"
+    stroke-width="5"
+    stroke-linecap="round"
+  />
+</svg>

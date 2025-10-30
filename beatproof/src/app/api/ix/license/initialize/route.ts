@@ -32,7 +32,7 @@ export async function POST(request: Request) {
       issuer,
     } = parsed.data;
     
-    const txBase64 = buildInitializeTransaction({
+    const txBase64 = await buildInitializeTransaction({
       beatHashHex,
       termsCid,
       licenseType,

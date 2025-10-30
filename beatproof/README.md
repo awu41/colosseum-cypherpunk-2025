@@ -11,7 +11,7 @@ Immersive floating-island interface for a Solana-powered audio NFT marketplace. 
 
 ## Getting Started
 ```bash
-cd app
+cd beatproof
 npm install
 npm run dev
 ```
