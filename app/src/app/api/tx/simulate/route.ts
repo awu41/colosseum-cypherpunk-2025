@@ -28,11 +28,8 @@ export async function POST(request: Request) {
     const program = getProgram();
     const connection = program.provider.connection;
     
-    // Simulate the transaction
-    const simulation = await connection.simulateTransaction(tx, {
-      commitment: 'confirmed',
-      sigVerify: false,
-    });
+    // Simulate the transaction (Transaction type uses signers parameter)
+    const simulation = await connection.simulateTransaction(tx, undefined, false);
     
     if (simulation.value.err) {
       return NextResponse.json({
