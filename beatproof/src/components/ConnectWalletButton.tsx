@@ -92,7 +92,7 @@ export default function ConnectWalletButton() {
         </span>
       )}
       {sessionMessage && (
-        <span style={{ display: 'block', marginTop: '0.3rem', color: 'rgba(227, 229, 236, 0.6)', fontSize: '0.7rem' }}>
+        <span style={{ display: 'block', marginTop: '0.3rem', color: 'rgba(227, 229, 236, 0.6)', fontSize: '0.7rem', textAlign: 'center' }}>
           {sessionMessage}
         </span>
       )}

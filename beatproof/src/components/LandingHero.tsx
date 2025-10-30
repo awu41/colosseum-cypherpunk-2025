@@ -25,9 +25,20 @@ export default function LandingHero({ onDevExplore }: { onDevExplore?: () => voi
         </p>
 
         <div className="cta-row">
-          <a className="primary-button" href="#marketplace" aria-label="View the marketplace section">
-            Enter the Marketplace
-          </a>
+          {onDevExplore ? (
+            <button
+              className="primary-button"
+              type="button"
+              onClick={onDevExplore}
+              aria-label="View the marketplace section"
+            >
+              Enter the Marketplace
+            </button>
+          ) : (
+            <a className="primary-button" href="#marketplace" aria-label="View the marketplace section">
+              Enter the Marketplace
+            </a>
+          )}
           <a className="ghost-button" href="#about" aria-label="Learn more about Beatproof">
             Learn More
           </a>
