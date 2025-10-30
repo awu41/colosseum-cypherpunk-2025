@@ -10,7 +10,7 @@ const shortenAddress = (value: string) => {
   return `${value.slice(0, 4)}…${value.slice(-4)}`;
 };
 
-export default function NavBar({ devMode = false, onExitDev }: { devMode?: boolean; onExitDev?: () => void }) {
+export default function NavBar() {
   const { connected, publicKey } = useWallet();
 
   const walletAddress = useMemo(() => {
@@ -33,27 +33,15 @@ export default function NavBar({ devMode = false, onExitDev }: { devMode?: boole
         <span>Beatproof</span>
       </div>
 
-      <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap' }}>
-        {devMode && (
-          <span className="wallet-tag wallet-tag--dev" aria-live="polite">
-            <span className="wallet-tag__dot" />
-            Dev Preview
-          </span>
-        )}
+      <div className="nav-actions">
         {walletAddress && (
           <span className="wallet-tag" aria-live="polite">
             <span className="wallet-tag__dot" />
             {shortenAddress(walletAddress)}
           </span>
         )}
-        {devMode && !walletAddress && onExitDev && (
-          <button className="ghost-button ghost-button--dev" type="button" onClick={onExitDev}>
-            Exit Dev Mode
-          </button>
-        )}
         <ConnectWalletButton />
       </div>
     </motion.header>
   );
 }
-

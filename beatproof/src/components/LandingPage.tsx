@@ -4,7 +4,13 @@ import { motion } from 'framer-motion';
 import NavBar from './NavBar';
 import LandingHero from './LandingHero';
 
-export default function LandingPage({ onDevExplore }: { onDevExplore?: () => void }) {
+type LandingPageProps = {
+  onEnter: () => void;
+  connecting: boolean;
+  statusMessage?: string;
+};
+
+export default function LandingPage({ onEnter, connecting, statusMessage }: LandingPageProps) {
   return (
     <motion.main
       key="landing-view"
@@ -15,7 +21,11 @@ export default function LandingPage({ onDevExplore }: { onDevExplore?: () => voi
       style={{ display: 'grid', gap: '2.5rem' }}
     >
       <NavBar />
-      <LandingHero onDevExplore={onDevExplore} />
+      <LandingHero
+        onEnter={onEnter}
+        connecting={connecting}
+        statusMessage={statusMessage}
+      />
     </motion.main>
   );
 }

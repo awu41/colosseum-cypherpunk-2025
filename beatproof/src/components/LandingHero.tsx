@@ -2,7 +2,13 @@
 
 import { motion } from 'framer-motion';
 
-export default function LandingHero({ onDevExplore }: { onDevExplore?: () => void }) {
+type LandingHeroProps = {
+  onEnter: () => void;
+  connecting: boolean;
+  statusMessage?: string;
+};
+
+export default function LandingHero({ onEnter, connecting, statusMessage }: LandingHeroProps) {
   return (
     <motion.section
       className="island island--frosted floating"
@@ -25,34 +31,31 @@ export default function LandingHero({ onDevExplore }: { onDevExplore?: () => voi
         </p>
 
         <div className="cta-row">
-          {onDevExplore ? (
-            <button
-              className="primary-button"
-              type="button"
-              onClick={onDevExplore}
-              aria-label="View the marketplace section"
-            >
-              Enter the Marketplace
-            </button>
-          ) : (
-            <a className="primary-button" href="#marketplace" aria-label="View the marketplace section">
-              Enter the Marketplace
-            </a>
-          )}
+          <button
+            className="primary-button"
+            type="button"
+            onClick={onEnter}
+            disabled={connecting}
+          >
+            {connecting ? 'Connecting…' : 'Enter the Marketplace'}
+          </button>
           <a className="ghost-button" href="#about" aria-label="Learn more about Beatproof">
             Learn More
           </a>
-          {onDevExplore && (
-            <button
-              className="ghost-button ghost-button--dev"
-              type="button"
-              onClick={onDevExplore}
-              aria-label="Preview the marketplace without connecting a wallet"
-            >
-              Dev Preview Marketplace
-            </button>
-          )}
         </div>
+        {statusMessage && (
+          <span
+            style={{
+              display: 'block',
+              marginTop: '0.75rem',
+              fontSize: '0.8rem',
+              color: 'rgba(236, 192, 66, 0.75)'
+            }}
+            aria-live="polite"
+          >
+            {statusMessage}
+          </span>
+        )}
       </motion.div>
 
       <div className="section-frame" id="about">
@@ -81,7 +84,7 @@ export default function LandingHero({ onDevExplore }: { onDevExplore?: () => voi
             <span className="metric-value">2.8s</span>
             <span className="metric-label">Avg. Settlement</span>
             <p style={{ margin: 0, color: 'rgba(227, 229, 236, 0.52)', fontSize: '0.85rem' }}>
-              Instant, low-fee trades powered by Solana&apos;s lightning network.
+              Instant, low-fee trades powered by Solana's lightning network.
             </p>
           </motion.div>
 
@@ -103,4 +106,3 @@ export default function LandingHero({ onDevExplore }: { onDevExplore?: () => voi
     </motion.section>
   );
 }
-

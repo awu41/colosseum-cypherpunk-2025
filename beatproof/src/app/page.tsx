@@ -1,55 +1,43 @@
 'use client';
 
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { useWallet } from '@solana/wallet-adapter-react';
-import { AnimatePresence } from 'framer-motion';
 import FloatingBackground from '@/components/FloatingBackground';
 import LandingPage from '@/components/LandingPage';
 import MarketplacePage from '@/components/MarketplacePage';
 
 export default function Home() {
-  const { connected } = useWallet();
-  const [activeView, setActiveView] = useState('landing');
-  const [devMode, setDevMode] = useState(false);
+  const { connected, connect, connecting } = useWallet();
+  const [landingStatus, setLandingStatus] = useState('');
 
-  const handleEnterDevMode = useCallback(() => {
-    setDevMode(true);
-    setActiveView('marketplace');
-  }, []);
-
-  const handleExitDevMode = useCallback(() => {
-    setDevMode(false);
-    if (!connected) {
-      setActiveView('landing');
-    }
-  }, [connected]);
-
-  useEffect(() => {
+  const handleEnterMarketplace = useCallback(async () => {
     if (connected) {
-      setDevMode(false);
-      setActiveView('marketplace');
-    } else if (!devMode) {
-      setActiveView('landing');
+      return;
     }
-  }, [connected, devMode]);
+
+    try {
+      setLandingStatus('');
+      await connect();
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Unable to connect to Phantom wallet.';
+      setLandingStatus(message);
+    }
+  }, [connected, connect]);
 
   return (
     <div className="app-shell">
       <FloatingBackground />
       <div className="content-layer">
-        <AnimatePresence mode="wait">
-          {activeView === 'landing' ? (
-            <LandingPage key="landing" onDevExplore={handleEnterDevMode} />
-          ) : (
-            <MarketplacePage
-              key="marketplace"
-              devMode={devMode}
-              onExitDev={handleExitDevMode}
-            />
-          )}
-        </AnimatePresence>
+        {connected ? (
+          <MarketplacePage />
+        ) : (
+          <LandingPage
+            onEnter={handleEnterMarketplace}
+            connecting={connecting}
+            statusMessage={landingStatus}
+          />
+        )}
       </div>
     </div>
   );
 }
-

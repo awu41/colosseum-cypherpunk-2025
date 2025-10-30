@@ -8,20 +8,17 @@ import NavBar from './NavBar';
 import MarketplaceGrid from './MarketplaceGrid';
 import { Listing, listings as initialListings } from '@/data/listings';
 
-export default function MarketplacePage({ devMode = false, onExitDev }: { devMode?: boolean; onExitDev?: () => void }) {
+export default function MarketplacePage() {
   const { publicKey } = useWallet();
   const [actionFeedback, setActionFeedback] = useState('');
   const [contactListing, setContactListing] = useState<Listing | null>(null);
 
-  const handleBuy = useCallback(
-    (listing: Listing) => {
-      setActionFeedback(
-        `Buy action queued for ${listing.title} at ${listing.price} ${listing.currency}. (Mock transaction)`
-      );
-      console.info('Buy listing request', { listing, owner: publicKey?.toBase58() });
-    },
-    [publicKey]
-  );
+  const handleBuy = useCallback((listing: Listing) => {
+    setActionFeedback(
+      `Buy action queued for ${listing.title} at ${listing.price} ${listing.currency}. (Mock transaction)`
+    );
+    console.info('Buy listing request', { listing, owner: publicKey?.toBase58() });
+  }, [publicKey]);
 
   const handleContact = useCallback((listing: Listing) => {
     if (!listing.telegram) {
@@ -67,7 +64,7 @@ export default function MarketplacePage({ devMode = false, onExitDev }: { devMod
       transition={{ duration: 0.55, ease: 'easeOut' }}
       style={{ display: 'grid', gap: '2.8rem', paddingBottom: '6rem' }}
     >
-      <NavBar devMode={devMode} onExitDev={onExitDev} />
+      <NavBar />
 
       <motion.section
         className='island floating'
@@ -85,21 +82,6 @@ export default function MarketplacePage({ devMode = false, onExitDev }: { devMod
           </div>
 
           <div className='marketplace-header__actions'>
-            {devMode && (
-              <span className='dev-banner' role='status' aria-live='polite'>
-                <span>Dev preview enabled. Wallet interactions are mocked.</span>
-                {onExitDev && (
-                  <button
-                    className='ghost-button ghost-button--dev'
-                    type='button'
-                    onClick={onExitDev}
-                    aria-label='Return to the landing experience'
-                  >
-                    Exit Dev Mode
-                  </button>
-                )}
-              </span>
-            )}
             <Link href='/sell' className='ghost-button'>
               List a Track
             </Link>

@@ -75,7 +75,7 @@ export default function ConnectWalletButton() {
   }, [publicKey]);
 
   return (
-    <div>
+    <div className="connect-wallet">
       <motion.button
         whileHover={{ scale: connected ? 1.02 : 1.04 }}
         whileTap={{ scale: 0.98 }}
@@ -87,12 +87,12 @@ export default function ConnectWalletButton() {
         {connecting ? 'Connecting…' : connected ? 'Disconnect Phantom' : 'Connect Phantom'}
       </motion.button>
       {statusMessage && (
-        <span style={{ display: 'block', marginTop: '0.45rem', color: '#f6d86a', fontSize: '0.75rem' }}>
+        <span className="connect-wallet__status connect-wallet__status--primary" aria-live="polite">
           {statusMessage}
         </span>
       )}
       {sessionMessage && (
-        <span style={{ display: 'block', marginTop: '0.3rem', color: 'rgba(227, 229, 236, 0.6)', fontSize: '0.7rem', textAlign: 'center' }}>
+        <span className="connect-wallet__status" aria-live="polite">
           {sessionMessage}
         </span>
       )}
