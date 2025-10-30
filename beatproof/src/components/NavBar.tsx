@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import { useMemo } from 'react';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { motion } from 'framer-motion';
@@ -33,7 +34,7 @@ export default function NavBar({ onMissingWallet }: NavBarProps = {}) {
       transition={{ duration: 0.8, ease: 'easeOut' }}
     >
       <div className="brand">
-        <img src="/logo.svg" alt="Beatproof logo" className="brand__logo" />
+        <Image src="/logo.svg" alt="Beatproof logo" className="brand__logo" width={42} height={42} priority />
         <span>Beatproof</span>
       </div>
 

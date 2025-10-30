@@ -84,7 +84,7 @@ export default function LandingHero({ onEnter, connecting, statusMessage }: Land
             <span className="metric-value">2.8s</span>
             <span className="metric-label">Avg. Settlement</span>
             <p style={{ margin: 0, color: 'rgba(227, 229, 236, 0.52)', fontSize: '0.85rem' }}>
-              Instant, low-fee trades powered by Solana's lightning network.
+              Instant, low-fee trades powered by Solana&apos;s lightning network.
             </p>
           </motion.div>
 

@@ -34,7 +34,7 @@ export default function ConnectWalletButton({ onMissingWallet }: ConnectWalletBu
     } catch (error: any) {
       setStatusMessage(error?.message ?? 'Unable to reach Phantom wallet.');
     }
-  }, [connected, connect, disconnect]);
+  }, [connected, connect, disconnect, onMissingWallet]);
 
   useEffect(() => {
     let cancelled = false;
