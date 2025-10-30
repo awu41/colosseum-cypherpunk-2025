@@ -96,11 +96,7 @@ export default function ConnectWalletButton({ onMissingWallet }: ConnectWalletBu
       >
         {connecting ? 'Connecting…' : connected ? 'Disconnect Phantom' : 'Connect Phantom'}
       </motion.button>
-      {statusMessage && (
-        <span className="connect-wallet__status connect-wallet__status--primary" aria-live="polite">
-          {statusMessage}
-        </span>
-      )}
+
       {sessionMessage && (
         <span className="connect-wallet__status" aria-live="polite">
           {sessionMessage}

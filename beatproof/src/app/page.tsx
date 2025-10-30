@@ -19,7 +19,6 @@ export default function Home() {
     }
 
     if (typeof window === 'undefined' || !(window as any).phantom?.solana) {
-      setLandingStatus('Phantom wallet not detected. Install Phantom to continue.');
       setMissingWalletPrompt(true);
       return;
     }

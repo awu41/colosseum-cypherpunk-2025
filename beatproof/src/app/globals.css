@@ -454,17 +454,7 @@ button {
   align-items: center;
 }
 
-.connect-wallet__status {
-  display: block;
-  font-size: 0.7rem;
-  color: rgba(227, 229, 236, 0.6);
-  text-align: center;
-}
 
-.connect-wallet__status--primary {
-  margin-top: 0.45rem;
-  color: #f6d86a;
-}
 
 .brand {
   display: flex;
