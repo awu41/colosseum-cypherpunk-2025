@@ -1,16 +1,7 @@
 'use client';
 
 import { motion, useCycle } from 'framer-motion';
-
-type Listing = {
-  id: string;
-  title: string;
-  artist: string;
-  price: string;
-  currency: string;
-  vibes: string;
-  soundcloudUrl: string;
-};
+import { Listing } from '@/data/listings';
 
 export default function ListingCard({ listing, onBuy, onContact }: { listing: Listing; onBuy: (listing: Listing) => void; onContact: (listing: Listing) => void }) {
   const [glimmer, cycleGlimmer] = useCycle(
@@ -53,13 +44,18 @@ export default function ListingCard({ listing, onBuy, onContact }: { listing: Li
           transition={{ duration: 0.5, ease: 'easeOut', delay: 0.2 }}
           style={{
             borderRadius: '999px',
-            padding: '0.35rem 0.85rem',
+            padding: '0.35rem 0.9rem',
             fontSize: '0.75rem',
             letterSpacing: '0.08em',
             textTransform: 'uppercase',
             background: 'rgba(236, 192, 66, 0.12)',
             border: '1px solid rgba(236, 192, 66, 0.22)',
             color: 'rgba(236, 192, 66, 0.85)',
+            textAlign: 'center',
+            minWidth: '7.5rem',
+            display: 'inline-flex',
+            justifyContent: 'center',
+            flexWrap: 'wrap',
           }}
         >
           {listing.vibes}
@@ -93,6 +89,7 @@ export default function ListingCard({ listing, onBuy, onContact }: { listing: Li
             className="pill-button pill-button--ghost"
             type="button"
             onClick={() => onContact(listing)}
+            disabled={!listing.telegram}
           >
             Contact
           </button>
@@ -104,4 +101,3 @@ export default function ListingCard({ listing, onBuy, onContact }: { listing: Li
     </motion.article>
   );
 }
-

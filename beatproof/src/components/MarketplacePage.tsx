@@ -1,18 +1,20 @@
 'use client';
 
-import { useCallback, useEffect, useState } from 'react';
+import Link from 'next/link';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { AnimatePresence, motion } from 'framer-motion';
 import NavBar from './NavBar';
 import MarketplaceGrid from './MarketplaceGrid';
-import { listings } from '@/data/listings';
+import { Listing, listings as initialListings } from '@/data/listings';
 
 export default function MarketplacePage({ devMode = false, onExitDev }: { devMode?: boolean; onExitDev?: () => void }) {
   const { publicKey } = useWallet();
   const [actionFeedback, setActionFeedback] = useState('');
+  const [contactListing, setContactListing] = useState<Listing | null>(null);
 
   const handleBuy = useCallback(
-    (listing: typeof listings[0]) => {
+    (listing: Listing) => {
       setActionFeedback(
         `Buy action queued for ${listing.title} at ${listing.price} ${listing.currency}. (Mock transaction)`
       );
@@ -21,8 +23,13 @@ export default function MarketplacePage({ devMode = false, onExitDev }: { devMod
     [publicKey]
   );
 
-  const handleContact = useCallback((listing: typeof listings[0]) => {
-    setActionFeedback(`Contact request sent to ${listing.artist}. (Placeholder interaction)`);
+  const handleContact = useCallback((listing: Listing) => {
+    if (!listing.telegram) {
+      setActionFeedback('This seller has not added a Telegram yet.');
+      return;
+    }
+
+    setContactListing(listing);
     console.info('Contact artist request', { listing, owner: publicKey?.toBase58() });
   }, [publicKey]);
 
@@ -34,6 +41,22 @@ export default function MarketplacePage({ devMode = false, onExitDev }: { devMod
     const timer = setTimeout(() => setActionFeedback(''), 4000);
     return () => clearTimeout(timer);
   }, [actionFeedback]);
+
+  const readableTelegram = useMemo(() => {
+    if (!contactListing?.telegram) {
+      return '';
+    }
+    const url = contactListing.telegram;
+    if (url.startsWith('http')) {
+      const handle = url.replace(/^https?:\/\/t\.me\//, '');
+      return handle.startsWith('@') ? handle : `@${handle}`;
+    }
+    return url.startsWith('@') ? url : `@${url}`;
+  }, [contactListing]);
+
+  const handleCloseContact = useCallback(() => {
+    setContactListing(null);
+  }, []);
 
   return (
     <motion.main
@@ -60,21 +83,27 @@ export default function MarketplacePage({ devMode = false, onExitDev }: { devMod
               on Solana with frictionless wallet flows.
             </p>
           </div>
-          {devMode && (
-            <div className='dev-banner' role='status' aria-live='polite'>
-              <span>Dev preview enabled. Wallet interactions are mocked.</span>
-              {onExitDev && (
-                <button
-                  className='ghost-button ghost-button--dev'
-                  type='button'
-                  onClick={onExitDev}
-                  aria-label='Return to the landing experience'
-                >
-                  Exit Dev Mode
-                </button>
-              )}
-            </div>
-          )}
+
+          <div className='marketplace-header__actions'>
+            {devMode && (
+              <span className='dev-banner' role='status' aria-live='polite'>
+                <span>Dev preview enabled. Wallet interactions are mocked.</span>
+                {onExitDev && (
+                  <button
+                    className='ghost-button ghost-button--dev'
+                    type='button'
+                    onClick={onExitDev}
+                    aria-label='Return to the landing experience'
+                  >
+                    Exit Dev Mode
+                  </button>
+                )}
+              </span>
+            )}
+            <Link href='/sell' className='ghost-button'>
+              List a Track
+            </Link>
+          </div>
 
           <div className='metrics-row'>
             <div className='metric-card'>
@@ -101,7 +130,7 @@ export default function MarketplacePage({ devMode = false, onExitDev }: { devMod
           </div>
         </div>
 
-        <MarketplaceGrid listings={listings} onBuy={handleBuy} onContact={handleContact} />
+        <MarketplaceGrid listings={initialListings} onBuy={handleBuy} onContact={handleContact} />
       </motion.section>
 
       <AnimatePresence>
@@ -127,7 +156,58 @@ export default function MarketplacePage({ devMode = false, onExitDev }: { devMod
           </motion.div>
         )}
       </AnimatePresence>
+
+      <AnimatePresence>
+        {contactListing && (
+          <motion.div
+            key='contact-island'
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 30 }}
+            transition={{ duration: 0.35 }}
+            className='island contact-island'
+            role='dialog'
+            aria-labelledby='contact-title'
+          >
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '1rem' }}>
+              <div>
+                <h3 id='contact-title' style={{ margin: 0 }}>
+                  Connect with {contactListing.artist}
+                </h3>
+                <p style={{ margin: '0.35rem 0 0', color: 'rgba(227, 229, 236, 0.7)' }}>
+                  DM the artist on Telegram to negotiate directly.
+                </p>
+              </div>
+              <button className='ghost-button ghost-button--dev' type='button' onClick={handleCloseContact}>
+                Close
+              </button>
+            </div>
+
+            <div className='contact-island__body'>
+              <div>
+                <span className='contact-label'>Track</span>
+                <p className='contact-value'>{contactListing.title}</p>
+              </div>
+              <div>
+                <span className='contact-label'>Asking</span>
+                <p className='contact-value'>
+                  {contactListing.price} {contactListing.currency}
+                </p>
+              </div>
+              {contactListing.telegram && (
+                <a
+                  className='contact-cta'
+                  href={contactListing.telegram}
+                  target='_blank'
+                  rel='noreferrer'
+                >
+                  Message {readableTelegram}
+                </a>
+              )}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </motion.main>
   );
 }
-

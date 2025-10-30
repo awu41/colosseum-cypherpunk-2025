@@ -7,6 +7,7 @@ Immersive floating-island interface for a Solana-powered audio NFT marketplace. 
 - Animated landing experience with gold-line aurora floating aesthetic.
 - Phantom wallet connect/disconnect powered by `@solana/wallet-adapter-react`.
 - Mock marketplace grid with SoundCloud embeds, buy/contact actions, and floating tile motion.
+- Dedicated `/sell` flow for submitting new listings with SoundCloud + Telegram metadata.
 - Responsive layout, dark accessibility-conscious palette, and reduced-motion fallbacks.
 
 ## Getting Started

@@ -1,16 +1,7 @@
 'use client';
 
 import ListingCard from './ListingCard';
-
-type Listing = {
-  id: string;
-  title: string;
-  artist: string;
-  price: string;
-  currency: string;
-  vibes: string;
-  soundcloudUrl: string;
-};
+import { Listing } from '@/data/listings';
 
 export default function MarketplaceGrid({ listings, onBuy, onContact }: { listings: Listing[]; onBuy: (listing: Listing) => void; onContact: (listing: Listing) => void }) {
   return (
@@ -21,4 +12,3 @@ export default function MarketplaceGrid({ listings, onBuy, onContact }: { listin
     </section>
   );
 }
-
