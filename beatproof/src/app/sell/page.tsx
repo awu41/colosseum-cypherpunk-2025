@@ -27,7 +27,16 @@ export default function SellPage() {
 
   const handleChange = useCallback((event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = event.target;
-    setForm((prev) => ({ ...prev, [name]: value }));
+
+    if (name === 'price') {
+      const formatted = value.replace(/[^0-9.]/g, '');
+      const parts = formatted.split('.');
+      const normalised = parts.length > 2 ? `${parts.shift()}.${parts.join('')}` : formatted;
+      setForm((prev) => ({ ...prev, [name]: normalised }));
+    } else {
+      setForm((prev) => ({ ...prev, [name]: value }));
+    }
+
     setStatus({ type: 'idle', message: '' });
   }, []);
 
