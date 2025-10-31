@@ -1,4 +1,4 @@
-import { 
+import {
   Transaction,
   PublicKey,
   SystemProgram,
@@ -29,8 +29,10 @@ export interface RevokeLicenseParams {
 /**
  * Build an initialize license instruction
  */
-export async function buildInitializeInstruction(params: InitializeLicenseParams) {
-  const program = getProgram();
+export async function buildInitializeInstruction(
+  params: InitializeLicenseParams,
+  program = getProgram(),
+) {
   const issuerKey = new PublicKey(params.issuer);
   const licenseeKey = new PublicKey(params.licensee);
   const beatMintKey = new PublicKey(params.beatMint);
@@ -108,13 +110,13 @@ export async function buildRevokeInstruction(params: RevokeLicenseParams) {
  * Build and serialize a transaction for initialize
  */
 export async function buildInitializeTransaction(params: InitializeLicenseParams): Promise<string> {
-  const ix = await buildInitializeInstruction(params);
+  const program = getProgram();
+  const ix = await buildInitializeInstruction(params, program);
   const tx = new Transaction().add(ix);
   tx.feePayer = new PublicKey(params.issuer);
-  tx.recentBlockhash = PublicKey.default.toBase58();
-  
-  // Note: these values are placeholders; client code should overwrite
-  // recentBlockhash and feePayer before signing.
+  const { blockhash } = await program.provider.connection.getLatestBlockhash();
+  tx.recentBlockhash = blockhash;
+
   return tx.serialize({ requireAllSignatures: false, verifySignatures: false }).toString('base64');
 }
 
