@@ -202,55 +202,7 @@
         108,
         176,
         231
-      ],
-      "type": {
-        "kind": "struct",
-        "fields": [
-          {
-            "name": "issuer",
-            "type": "publicKey"
-          },
-          {
-            "name": "licensee",
-            "type": "publicKey"
-          },
-          {
-            "name": "beatMint",
-            "type": "publicKey"
-          },
-          {
-            "name": "beatHash",
-            "type": {
-              "array": [
-                "u8",
-                32
-              ]
-            }
-          },
-          {
-            "name": "termsCid",
-            "type": "string"
-          },
-          {
-            "name": "licenseType",
-            "type": {
-              "defined": "LicenseType"
-            }
-          },
-          {
-            "name": "territory",
-            "type": "string"
-          },
-          {
-            "name": "validUntil",
-            "type": "i64"
-          },
-          {
-            "name": "revoked",
-            "type": "bool"
-          }
-        ]
-      }
+      ]
     },
     {
       "name": "LicenseGuard",
@@ -263,25 +215,7 @@
         225,
         10,
         227
-      ],
-      "type": {
-        "kind": "struct",
-        "fields": [
-          {
-            "name": "beatHash",
-            "type": {
-              "array": [
-                "u8",
-                32
-              ]
-            }
-          },
-          {
-            "name": "exclusiveActive",
-            "type": "bool"
-          }
-        ]
-      }
+      ]
     }
   ],
   "events": [
