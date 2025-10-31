@@ -4,7 +4,6 @@ import Link from 'next/link';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { clusterApiUrl, Connection, Transaction } from '@solana/web3.js';
-import Link from 'next/link';
 import { AnimatePresence, motion } from 'framer-motion';
 import NavBar from './NavBar';
 import MarketplaceGrid from './MarketplaceGrid';
