@@ -14,6 +14,7 @@ export type Listing = {
   licenseType?: 'Exclusive' | 'NonExclusive';
   territory?: string;
   validUntil?: string;
+  notes?: string;
 };
 
 export const listings: Listing[] = [
