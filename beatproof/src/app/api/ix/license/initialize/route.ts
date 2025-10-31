@@ -13,8 +13,6 @@ const Body = z.object({
   validUntil: z.string().or(z.number()).transform((val) => BigInt(val)),
 });
 
-const MOCK_MODE = process.env.MOCK_LICENSE_TX === 'true';
-
 export async function POST(request: Request) {
   try {
     let walletAddress: string;
@@ -57,17 +55,6 @@ export async function POST(request: Request) {
     });
 
     console.info('[initialize-license] idl', idl);
-
-    if (MOCK_MODE) {
-      const mockSignature = `MOCK-${Date.now().toString(16).toUpperCase()}`;
-      console.info('[initialize-license] mock enabled, returning fake signature', { mockSignature });
-      return NextResponse.json({
-        mock: true,
-        mockSignature,
-        note: 'Mock transaction – no on-chain interaction performed.',
-      });
-    }
-    
     const txBase64 = await buildInitializeTransaction({
       beatHashHex,
       beatMint,

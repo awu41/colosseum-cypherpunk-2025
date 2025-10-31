@@ -51,6 +51,13 @@ export default function MarketplacePage() {
       setActionFeedback('Preparing transaction…');
       console.info('[buy] listing metadata', listing);
 
+      if (listing.mock) {
+        const mockSignature = `DEMO-${Date.now().toString(16).toUpperCase()}`;
+        setActionFeedback(`License minted! Signature ${mockSignature.slice(0, 8)}…`);
+        console.info('[buy] mock mint success', { listing, signature: mockSignature });
+        return;
+      }
+
       const response = await fetch('/api/ix/license/initialize', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
