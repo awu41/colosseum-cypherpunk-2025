@@ -9,6 +9,7 @@ import NavBar from './NavBar';
 import MarketplaceGrid from './MarketplaceGrid';
 import { Listing, listings as initialListings } from '@/data/listings';
 import { loadCustomListings } from '@/lib/listings/storage';
+import Link from 'next/link';
 
 export default function MarketplacePage() {
   const { publicKey, sendTransaction, connected } = useWallet();
@@ -196,6 +197,17 @@ export default function MarketplacePage() {
             }}
           >
             <p style={{ margin: 0, fontSize: '0.9rem', color: 'rgba(236, 234, 232, 0.9)' }}>{actionFeedback}</p>
+            {actionFeedback.startsWith('License minted!') && (
+              <Link
+                href={`https://explorer.solana.com/tx/${actionFeedback.split(' ').pop()?.replace('…', '')}?cluster=devnet`}
+                className='pill-button pill-button--ghost'
+                style={{ marginTop: '0.7rem', display: 'inline-block' }}
+                target='_blank'
+                rel='noreferrer'
+              >
+                View on Explorer
+              </Link>
+            )}
           </motion.div>
         )}
       </AnimatePresence>

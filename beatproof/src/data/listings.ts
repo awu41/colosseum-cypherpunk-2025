@@ -15,6 +15,7 @@ export type Listing = {
   territory?: string;
   validUntil?: string;
   notes?: string;
+  contractSignature?: string;
 };
 
 export const listings: Listing[] = [
