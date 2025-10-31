@@ -104,7 +104,8 @@ export default function MarketplacePage() {
         console.error('Program logs:', walletErrorLogs);
       } else if (preparedTx) {
         try {
-          const simulation = await connection.simulateTransaction(preparedTx, {
+          const legacySimTx = preparedTx as any; // legacy Transaction API
+          const simulation = await connection.simulateTransaction(legacySimTx, {
             sigVerify: false,
             commitment: 'processed',
           });
