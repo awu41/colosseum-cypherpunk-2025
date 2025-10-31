@@ -7,9 +7,10 @@ export function getProgram() {
   const programIdStr = process.env.PROGRAM_ID || (idl as any).address;
   const connection = new Connection(rpcUrl, "confirmed");
   const provider = new anchor.AnchorProvider(connection, {} as any, {});
+  const programId = new PublicKey(programIdStr);
+  const idlWithAddress = { ...(idl as any), address: programId.toBase58() };
   // @ts-ignore anchor.Program accepts Typed or any IDL shape
-  const program = new anchor.Program(idl as any, new PublicKey(programIdStr), provider);
+  const program = new anchor.Program(idlWithAddress as any, provider);
   return program;
 }
-
 
