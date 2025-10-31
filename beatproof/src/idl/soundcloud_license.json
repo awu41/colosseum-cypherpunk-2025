@@ -208,18 +208,18 @@
         "fields": [
           {
             "name": "issuer",
-            "type": "publicKey"
+            "type": "pubkey"
           },
           {
             "name": "licensee",
-            "type": "publicKey"
+            "type": "pubkey"
           },
           {
-            "name": "beatMint",
-            "type": "publicKey"
+            "name": "beat_mint",
+            "type": "pubkey"
           },
           {
-            "name": "beatHash",
+            "name": "beat_hash",
             "type": {
               "array": [
                 "u8",
@@ -228,13 +228,15 @@
             }
           },
           {
-            "name": "termsCid",
+            "name": "terms_cid",
             "type": "string"
           },
           {
-            "name": "licenseType",
+            "name": "license_type",
             "type": {
-              "defined": "LicenseType"
+              "defined": {
+                "name": "LicenseType"
+              }
             }
           },
           {
@@ -242,7 +244,7 @@
             "type": "string"
           },
           {
-            "name": "validUntil",
+            "name": "valid_until",
             "type": "i64"
           },
           {
@@ -268,7 +270,7 @@
         "kind": "struct",
         "fields": [
           {
-            "name": "beatHash",
+            "name": "beat_hash",
             "type": {
               "array": [
                 "u8",
@@ -277,7 +279,7 @@
             }
           },
           {
-            "name": "exclusiveActive",
+            "name": "exclusive_active",
             "type": "bool"
           }
         ]

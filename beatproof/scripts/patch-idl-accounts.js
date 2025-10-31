@@ -19,22 +19,22 @@ const layouts = {
   License: {
     kind: 'struct',
     fields: [
-      { name: 'issuer', type: 'publicKey' },
-      { name: 'licensee', type: 'publicKey' },
-      { name: 'beatMint', type: 'publicKey' },
-      { name: 'beatHash', type: { array: ['u8', 32] } },
-      { name: 'termsCid', type: 'string' },
-      { name: 'licenseType', type: { defined: 'LicenseType' } },
+      { name: 'issuer', type: 'pubkey' },
+      { name: 'licensee', type: 'pubkey' },
+      { name: 'beat_mint', type: 'pubkey' },
+      { name: 'beat_hash', type: { array: ['u8', 32] } },
+      { name: 'terms_cid', type: 'string' },
+      { name: 'license_type', type: { defined: { name: 'LicenseType' } } },
       { name: 'territory', type: 'string' },
-      { name: 'validUntil', type: 'i64' },
+      { name: 'valid_until', type: 'i64' },
       { name: 'revoked', type: 'bool' },
     ],
   },
   LicenseGuard: {
     kind: 'struct',
     fields: [
-      { name: 'beatHash', type: { array: ['u8', 32] } },
-      { name: 'exclusiveActive', type: 'bool' },
+      { name: 'beat_hash', type: { array: ['u8', 32] } },
+      { name: 'exclusive_active', type: 'bool' },
     ],
   },
 };
@@ -55,4 +55,3 @@ idl.accounts = idl.accounts.map((account) => {
 
 fs.writeFileSync(idlPath, JSON.stringify(idl, null, 2));
 console.log(`Patched account layouts in ${idlPath}`);
-
