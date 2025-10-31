@@ -42,6 +42,16 @@ export async function POST(request: Request) {
       territory,
       validUntil,
     } = parsed.data;
+
+    console.info('[initialize-license] payload', {
+      beatHashHex,
+      beatMint,
+      termsCid,
+      licenseType,
+      territory,
+      validUntil,
+      walletAddress,
+    });
     
     const txBase64 = await buildInitializeTransaction({
       beatHashHex,
@@ -59,8 +69,9 @@ export async function POST(request: Request) {
       note: 'Transaction must be signed and sent by the client. Set recentBlockhash and feePayer before signing.',
     });
   } catch (e: any) {
+    console.error('[initialize-license] error', e);
     return NextResponse.json(
-      { error: e?.message || 'Unknown error' },
+      { error: e?.message || 'Unknown error', stack: e?.stack },
       { status: 500 }
     );
   }

@@ -48,6 +48,7 @@ export default function MarketplacePage() {
     try {
       setBuyingId(listing.id);
       setActionFeedback('Preparing transaction…');
+      console.info('[buy] listing metadata', listing);
 
       const response = await fetch('/api/ix/license/initialize', {
         method: 'POST',
