@@ -137,7 +137,8 @@ export default function MarketplacePage() {
         }
       }
 
-      setActionFeedback(detailedMessage || 'Unexpected error during mint.');
+      console.error('Buy listing detailed error', detailedMessage);
+      setActionFeedback('');
     } finally {
       setBuyingId(null);
     }
