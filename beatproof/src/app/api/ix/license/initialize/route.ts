@@ -78,7 +78,8 @@ export async function POST(request: Request) {
 
       try {
         const program = (await import('@/lib/anchor/program')).getProgram();
-        const simulation = await program.provider.connection.simulateTransaction(tx, {
+        const simulate = (program.provider.connection as any).simulateTransaction.bind(program.provider.connection);
+        const simulation = await simulate(tx, {
           sigVerify: false,
           commitment: 'processed',
         });
