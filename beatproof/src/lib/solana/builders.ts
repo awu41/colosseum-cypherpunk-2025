@@ -46,6 +46,16 @@ export async function buildInitializeInstruction(params: InitializeLicenseParams
     licenseeKey,
   );
   const guardPda = deriveLicenseGuardPda(program.programId, params.beatHashHex);
+  const licenseTypeVariant =
+    params.licenseType === 'Exclusive'
+      ? 'exclusive'
+      : params.licenseType === 'NonExclusive'
+      ? 'nonExclusive'
+      : undefined;
+
+  if (!licenseTypeVariant) {
+    throw new Error(`Unsupported license type ${params.licenseType}`);
+  }
   
   const ix = await (program.methods as any)
     .initialize(
@@ -53,7 +63,7 @@ export async function buildInitializeInstruction(params: InitializeLicenseParams
       licenseeKey,
       beatMintKey,
       params.termsCid,
-      { [params.licenseType]: {} },
+      { [licenseTypeVariant]: {} },
       params.territory,
       new BN(params.validUntil.toString()),
     )
