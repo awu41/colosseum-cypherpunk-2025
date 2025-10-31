@@ -7,11 +7,24 @@ import { AnimatePresence, motion } from 'framer-motion';
 import NavBar from './NavBar';
 import MarketplaceGrid from './MarketplaceGrid';
 import { Listing, listings as initialListings } from '@/data/listings';
+import { loadCustomListings } from '@/lib/listings/storage';
 
 export default function MarketplacePage() {
   const { publicKey } = useWallet();
   const [actionFeedback, setActionFeedback] = useState('');
   const [contactListing, setContactListing] = useState<Listing | null>(null);
+  const [listings, setListings] = useState<Listing[]>(initialListings);
+
+  useEffect(() => {
+    const custom = loadCustomListings();
+    if (custom.length) {
+      setListings((prev) => {
+        const existingIds = new Set(prev.map((item) => item.id));
+        const merged = [...custom.filter((item) => !existingIds.has(item.id)), ...prev];
+        return merged;
+      });
+    }
+  }, []);
 
   const handleBuy = useCallback((listing: Listing) => {
     setActionFeedback(
@@ -112,7 +125,7 @@ export default function MarketplacePage() {
           </div>
         </div>
 
-        <MarketplaceGrid listings={initialListings} onBuy={handleBuy} onContact={handleContact} />
+        <MarketplaceGrid listings={listings} onBuy={handleBuy} onContact={handleContact} />
       </motion.section>
 
       <AnimatePresence>

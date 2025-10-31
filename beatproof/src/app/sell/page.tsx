@@ -4,6 +4,8 @@ import Link from 'next/link';
 import { ChangeEvent, FormEvent, useCallback, useState } from 'react';
 import { motion } from 'framer-motion';
 import NavBar from '@/components/NavBar';
+import { addCustomListing } from '@/lib/listings/storage';
+import type { Listing } from '@/data/listings';
 
 const defaultSellForm = {
   title: '',
@@ -37,6 +39,22 @@ export default function SellPage() {
     return `https://t.me/${cleaned}`;
   }, []);
 
+  const createListing = useCallback((): Listing => {
+    const id = `${form.title.trim().toLowerCase().replace(/\s+/g, '-')}-${Date.now().toString(36)}`;
+    return {
+      id,
+      title: form.title.trim(),
+      artist: form.artist.trim(),
+      price: form.price.trim() || 'N/A',
+      currency: form.currency,
+      vibes: form.vibes.trim(),
+      soundcloudUrl: form.soundcloudUrl.trim(),
+      telegram: normaliseTelegramLink(form.telegram),
+      notes: form.notes.trim(),
+      status: 'available',
+    };
+  }, [form, normaliseTelegramLink]);
+
   const handleSubmit = useCallback((event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
@@ -45,15 +63,12 @@ export default function SellPage() {
       return;
     }
 
-    const payload = {
-      ...form,
-      telegram: normaliseTelegramLink(form.telegram),
-    };
-
-    console.info('Sell submission (mock)', payload);
-    setStatus({ type: 'success', message: `${form.title.trim()} submitted. Our curators will review shortly.` });
+    const listing = createListing();
+    addCustomListing(listing);
+    console.info('Sell submission stored locally', listing);
+    setStatus({ type: 'success', message: `${listing.title} is now visible in the marketplace.` });
     setForm(defaultSellForm);
-  }, [form, normaliseTelegramLink]);
+  }, [createListing, form]);
 
   return (
     <motion.main

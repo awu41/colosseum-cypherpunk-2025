@@ -7,6 +7,7 @@ export type Listing = {
   vibes: string;
   soundcloudUrl: string;
   telegram?: string;
+  status?: 'available' | 'licensed' | 'exclusive';
 };
 
 export const listings: Listing[] = [
