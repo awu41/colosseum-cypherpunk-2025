@@ -45,6 +45,7 @@ export default function MarketplacePage() {
       return;
     }
 
+    let preparedTx: Transaction | null = null;
     try {
       setBuyingId(listing.id);
       setActionFeedback('Preparing transaction…');
@@ -72,15 +73,54 @@ export default function MarketplacePage() {
       const { transaction } = await response.json();
 
       const tx = Transaction.from(Buffer.from(transaction, 'base64'));
+      preparedTx = tx;
+
+      const latestBlockhash = await connection.getLatestBlockhash('confirmed');
+      tx.recentBlockhash = latestBlockhash.blockhash;
+      tx.feePayer = publicKey;
+
       const signature = await sendTransaction(tx, connection);
-      await connection.confirmTransaction(signature, 'confirmed');
+      console.info('[buy] submitted signature', signature);
+
+      await connection.confirmTransaction(
+        {
+          signature,
+          blockhash: latestBlockhash.blockhash,
+          lastValidBlockHeight: latestBlockhash.lastValidBlockHeight,
+        },
+        'confirmed'
+      );
 
       setActionFeedback(`License minted! Signature ${signature.slice(0, 8)}…`);
       console.info('License minted', { listing, signature });
     } catch (error) {
-      const message = error instanceof Error ? error.message : 'Failed to process transaction.';
-      setActionFeedback(message);
       console.error('Buy listing failed', error);
+
+      let detailedMessage = error instanceof Error ? error.message : 'Failed to process transaction.';
+
+      const walletErrorLogs = (error as any)?.logs;
+      if (Array.isArray(walletErrorLogs) && walletErrorLogs.length) {
+        detailedMessage = walletErrorLogs.join('\n');
+        console.error('Program logs:', walletErrorLogs);
+      } else if (preparedTx) {
+        try {
+          const simulation = await connection.simulateTransaction(preparedTx, {
+            sigVerify: false,
+            commitment: 'processed',
+          });
+          if (simulation.value.err) {
+            detailedMessage = JSON.stringify(simulation.value.err);
+            console.error('Simulation error', simulation.value);
+          } else if (simulation.value.logs) {
+            detailedMessage = simulation.value.logs.join('\n');
+            console.error('Simulation logs', simulation.value.logs);
+          }
+        } catch (simError) {
+          console.error('Simulation failed', simError);
+        }
+      }
+
+      setActionFeedback(detailedMessage || 'Unexpected error during mint.');
     } finally {
       setBuyingId(null);
     }
