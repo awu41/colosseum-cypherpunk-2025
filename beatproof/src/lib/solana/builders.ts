@@ -110,10 +110,12 @@ export async function buildRevokeInstruction(params: RevokeLicenseParams) {
 export async function buildInitializeTransaction(params: InitializeLicenseParams): Promise<string> {
   const ix = await buildInitializeInstruction(params);
   const tx = new Transaction().add(ix);
+  tx.feePayer = new PublicKey(params.issuer);
+  tx.recentBlockhash = PublicKey.default.toBase58();
   
-  // Note: recentBlockhash and feePayer should be set by the client
-  // before signing. We return the base64 serialized transaction.
-  return tx.serialize({ requireAllSignatures: false }).toString('base64');
+  // Note: these values are placeholders; client code should overwrite
+  // recentBlockhash and feePayer before signing.
+  return tx.serialize({ requireAllSignatures: false, verifySignatures: false }).toString('base64');
 }
 
 /**
