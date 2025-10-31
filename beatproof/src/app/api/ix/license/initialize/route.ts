@@ -66,6 +66,19 @@ export async function POST(request: Request) {
       issuer: walletAddress,
       licensee: walletAddress,
     });
+
+    try {
+      const { Transaction } = await import('@solana/web3.js');
+      const tx = Transaction.from(Buffer.from(txBase64, 'base64'));
+      console.info('[initialize-license] built transaction summary', {
+        feePayer: tx.feePayer?.toBase58(),
+        recentBlockhash: tx.recentBlockhash,
+        lastValidBlockHeight: tx.lastValidBlockHeight,
+        instructions: tx.instructions.length,
+      });
+    } catch (logError) {
+      console.warn('[initialize-license] unable to decode transaction for logging', logError);
+    }
     
     return NextResponse.json({
       transaction: txBase64,
