@@ -70,7 +70,16 @@ export default function MarketplacePage() {
         throw new Error(errorText || 'Failed to build transaction');
       }
 
-      const { transaction } = await response.json();
+      const payload = await response.json();
+
+      if (!payload.transaction && payload.mock) {
+        const mockSignature: string = payload.mockSignature || 'MOCK_SIGNATURE';
+        setActionFeedback(`License minted! Signature ${mockSignature.slice(0, 8)}…`);
+        console.info('Mock license minted', { listing, signature: mockSignature });
+        return;
+      }
+
+      const { transaction } = payload;
 
       const tx = Transaction.from(Buffer.from(transaction, 'base64'));
       preparedTx = tx;
