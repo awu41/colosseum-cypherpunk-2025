@@ -13,7 +13,20 @@ type ConnectWalletButtonProps = {
 export default function ConnectWalletButton({ onMissingWallet }: ConnectWalletButtonProps) {
   const { connected, connecting, connect, disconnect, publicKey } = useWallet();
   const [statusMessage, setStatusMessage] = useState('');
-  const [sessionMessage, setSessionMessage] = useState('');
+
+  const resolvePhantomProvider = useCallback(() => {
+    if (typeof window === 'undefined') {
+      return null;
+    }
+    const anyWindow = window as any;
+    if (anyWindow.solana?.isPhantom) {
+      return anyWindow.solana;
+    }
+    if (anyWindow.phantom?.solana?.isPhantom) {
+      return anyWindow.phantom.solana;
+    }
+    return null;
+  }, []);
 
   const handleAction = useCallback(async () => {
     try {
@@ -24,7 +37,7 @@ export default function ConnectWalletButton({ onMissingWallet }: ConnectWalletBu
         return;
       }
 
-      if (typeof window === 'undefined' || !(window as any).phantom?.solana) {
+      if (!resolvePhantomProvider()) {
         setStatusMessage('Phantom wallet not detected. Install Phantom to continue.');
         onMissingWallet?.();
         return;
@@ -34,16 +47,13 @@ export default function ConnectWalletButton({ onMissingWallet }: ConnectWalletBu
     } catch (error: any) {
       setStatusMessage(error?.message ?? 'Unable to reach Phantom wallet.');
     }
-  }, [connected, connect, disconnect, onMissingWallet]);
+  }, [connected, connect, disconnect, onMissingWallet, resolvePhantomProvider]);
 
   useEffect(() => {
     let cancelled = false;
 
     const syncSession = async () => {
       try {
-        if (!cancelled) {
-          setSessionMessage('');
-        }
         if (publicKey) {
           const response = await fetch(SESSION_COOKIE_ENDPOINT, {
             method: 'POST',
@@ -55,24 +65,16 @@ export default function ConnectWalletButton({ onMissingWallet }: ConnectWalletBu
           if (!response.ok) {
             throw new Error('Failed to persist wallet session.');
           }
-
-          if (!cancelled) {
-            setSessionMessage('Wallet session cached for backend.');
-          }
-        } else {
+        } else if (!cancelled) {
           await fetch(SESSION_COOKIE_ENDPOINT, {
             method: 'DELETE',
             credentials: 'include',
           });
-
-          if (!cancelled) {
-            setSessionMessage('Wallet session cleared.');
-          }
         }
       } catch (error) {
         if (!cancelled) {
           const message = error instanceof Error ? error.message : 'Unable to update wallet session.';
-          setSessionMessage(message);
+          setStatusMessage(message);
         }
       }
     };
@@ -97,9 +99,9 @@ export default function ConnectWalletButton({ onMissingWallet }: ConnectWalletBu
         {connecting ? 'Connecting…' : connected ? 'Disconnect Phantom' : 'Connect Phantom'}
       </motion.button>
 
-      {sessionMessage && (
+      {statusMessage && (
         <span className="connect-wallet__status" aria-live="polite">
-          {sessionMessage}
+          {statusMessage}
         </span>
       )}
     </div>
