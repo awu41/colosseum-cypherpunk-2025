@@ -115,6 +115,7 @@ export async function buildInitializeTransaction(params: InitializeLicenseParams
   const tx = new Transaction().add(ix);
   tx.feePayer = new PublicKey(params.issuer);
   const { blockhash, lastValidBlockHeight } = await program.provider.connection.getLatestBlockhash();
+  console.info('[buildInitializeTransaction] fetched blockhash', { blockhash, lastValidBlockHeight });
   tx.recentBlockhash = blockhash;
   tx.lastValidBlockHeight = lastValidBlockHeight;
 
