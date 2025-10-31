@@ -78,6 +78,11 @@ export async function POST(request: Request) {
     } catch (logError) {
       console.warn('[initialize-license] unable to decode transaction for logging', logError);
     }
+
+    console.info('[initialize-license] transaction payload meta', {
+      base64Length: txBase64.length,
+      base64Preview: txBase64.slice(0, 128),
+    });
     
     return NextResponse.json({
       transaction: txBase64,
