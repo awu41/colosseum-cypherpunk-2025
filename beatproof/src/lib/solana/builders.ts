@@ -114,8 +114,9 @@ export async function buildInitializeTransaction(params: InitializeLicenseParams
   const ix = await buildInitializeInstruction(params, program);
   const tx = new Transaction().add(ix);
   tx.feePayer = new PublicKey(params.issuer);
-  const { blockhash } = await program.provider.connection.getLatestBlockhash();
+  const { blockhash, lastValidBlockHeight } = await program.provider.connection.getLatestBlockhash();
   tx.recentBlockhash = blockhash;
+  tx.lastValidBlockHeight = lastValidBlockHeight;
 
   return tx.serialize({ requireAllSignatures: false, verifySignatures: false }).toString('base64');
 }
