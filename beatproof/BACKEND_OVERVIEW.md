@@ -64,6 +64,12 @@ All endpoints share common traits:
 - Deploying through Vercel requires setting the Root Directory to `beatproof/` and defining the expected environment variables.
 - Build command: `npm run build`; output directory defaults to `.next`.
 - Ensure `PROGRAM_ID` matches the deployed Anchor program on the target cluster (devnet/localnet/mainnet).
+- For the current devnet deployment use:
+  ```
+  ANCHOR_PROVIDER_URL=https://api.devnet.solana.com
+  PROGRAM_ID=FYqcZuL5DUBUTTKx94oew8zZoX5rSR8WpEA3RJEXC457
+  ```
+  These defaults are baked into `env.example`; copy them into `.env.local` and Vercel project settings after a redeploy.
 
 ## Open Questions / Follow-ups
 

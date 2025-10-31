@@ -13,6 +13,25 @@ tracks to wallet addresses.
 - **IDL**: `beatproof/src/idl/soundcloud_license.json`
 - **Client entrypoint**: `beatproof/src/lib/anchor/program.ts`
 
+### Deployment Checklist (Devnet)
+
+1. **Environment variables**
+   - `ANCHOR_PROVIDER_URL=https://api.devnet.solana.com`
+   - `PROGRAM_ID=FYqcZuL5DUBUTTKx94oew8zZoX5rSR8WpEA3RJEXC457`
+   - Mirror these values in local `.env`, `env.example`, and Vercel project settings.
+2. **Build and deploy**
+   ```bash
+   cd soundcloud_license
+   anchor build
+   anchor deploy --provider.cluster devnet
+   ```
+   Deploy keypair: `/Users/albert/.config/solana/id.json`. Ensure it holds ≥2 SOL on devnet before deploying (`solana balance`).
+3. **Post-deploy validation**
+   - Confirm program account:  
+     `solana account FYqcZuL5DUBUTTKx94oew8zZoX5rSR8WpEA3RJEXC457 --url https://api.devnet.solana.com`
+   - Record deploy signature (latest: `NGYXR2FmM8TgeLh5ZK62C76RS2s3Gb3kJb6vuSWSYKgYjdQiLh15J5BGHZ4ei9v6tNLYeHHVRzPk9toxwBFcuEq`).
+   - Optional integration check: run `/api/ix/license/initialize` once and verify the transaction on explorer (`?cluster=devnet`).
+
 ## Accounts & PDA Layout
 
 ### License Account
@@ -118,4 +137,3 @@ anchor test
 ```
 
 Ensure no local `solana-test-validator` is running on port `9900` before executing.
-

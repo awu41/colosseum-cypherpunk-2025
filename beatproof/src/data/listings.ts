@@ -16,7 +16,6 @@ export type Listing = {
   validUntil?: string;
   notes?: string;
   contractSignature?: string;
-  mock?: boolean;
 };
 
 export const listings: Listing[] = [
@@ -147,17 +146,5 @@ export const listings: Listing[] = [
     licenseType: 'Exclusive',
     territory: 'Worldwide',
     validUntil: '1785465600',
-  },
-  {
-    id: 'demo-fast-pass',
-    title: 'Demo Fast Pass',
-    artist: 'Beatproof Labs',
-    price: '0.0',
-    currency: 'SOL',
-    vibes: 'demo',
-    soundcloudUrl: 'https://soundcloud.com',
-    notes: 'Demo listing that instantly mints without touching the blockchain.',
-    status: 'available',
-    mock: true,
   },
 ];
