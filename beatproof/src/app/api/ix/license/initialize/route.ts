@@ -75,6 +75,17 @@ export async function POST(request: Request) {
         lastValidBlockHeight: tx.lastValidBlockHeight,
         instructions: tx.instructions.length,
       });
+
+      try {
+        const program = (await import('@/lib/anchor/program')).getProgram();
+        const simulation = await program.provider.connection.simulateTransaction(tx, {
+          sigVerify: false,
+          commitment: 'processed',
+        });
+        console.info('[initialize-license] server simulation result', simulation.value);
+      } catch (simulationError) {
+        console.warn('[initialize-license] server simulation failed', simulationError);
+      }
     } catch (logError) {
       console.warn('[initialize-license] unable to decode transaction for logging', logError);
     }
