@@ -11,7 +11,7 @@ type ConnectWalletButtonProps = {
 };
 
 export default function ConnectWalletButton({ onMissingWallet }: ConnectWalletButtonProps) {
-  const { connected, connecting, connect, disconnect, publicKey } = useWallet();
+  const { connected, connecting, connect, disconnect, publicKey, select } = useWallet();
   const [statusMessage, setStatusMessage] = useState('');
 
   const resolvePhantomProvider = useCallback(() => {
@@ -43,11 +43,12 @@ export default function ConnectWalletButton({ onMissingWallet }: ConnectWalletBu
         return;
       }
 
+      select?.('Phantom');
       await connect();
     } catch (error: any) {
       setStatusMessage(error?.message ?? 'Unable to reach Phantom wallet.');
     }
-  }, [connected, connect, disconnect, onMissingWallet, resolvePhantomProvider]);
+  }, [connected, connect, disconnect, onMissingWallet, resolvePhantomProvider, select]);
 
   useEffect(() => {
     let cancelled = false;

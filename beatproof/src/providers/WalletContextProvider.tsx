@@ -16,7 +16,7 @@ export default function WalletContextProvider({ children }: { children: React.Re
 
   return (
     <ConnectionProvider endpoint={endpoint}>
-      <WalletProvider wallets={wallets} autoConnect>
+      <WalletProvider wallets={wallets} autoConnect={wallets.length > 0}>
         {children}
       </WalletProvider>
     </ConnectionProvider>
