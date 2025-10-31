@@ -6,7 +6,7 @@ import { WalletName } from '@solana/wallet-adapter-base';
 import { motion } from 'framer-motion';
 
 const SESSION_COOKIE_ENDPOINT = '/api/session';
-const PHANTOM_WALLET_NAME: WalletName<'Phantom'> = 'Phantom';
+const PHANTOM_WALLET_NAME = 'Phantom' as WalletName<'Phantom'>;
 
 type ConnectWalletButtonProps = {
   onMissingWallet?: () => void;
