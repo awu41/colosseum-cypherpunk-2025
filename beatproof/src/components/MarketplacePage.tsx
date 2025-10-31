@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useWallet } from '@solana/wallet-adapter-react';
+import { clusterApiUrl, Connection, Transaction } from '@solana/web3.js';
 import { AnimatePresence, motion } from 'framer-motion';
 import NavBar from './NavBar';
 import MarketplaceGrid from './MarketplaceGrid';
@@ -10,10 +11,13 @@ import { Listing, listings as initialListings } from '@/data/listings';
 import { loadCustomListings } from '@/lib/listings/storage';
 
 export default function MarketplacePage() {
-  const { publicKey } = useWallet();
+  const { publicKey, sendTransaction, connected } = useWallet();
   const [actionFeedback, setActionFeedback] = useState('');
   const [contactListing, setContactListing] = useState<Listing | null>(null);
   const [listings, setListings] = useState<Listing[]>(initialListings);
+  const [buyingId, setBuyingId] = useState<string | null>(null);
+
+  const connection = useMemo(() => new Connection(clusterApiUrl('devnet'), 'confirmed'), []);
 
   useEffect(() => {
     const custom = loadCustomListings();
@@ -26,12 +30,56 @@ export default function MarketplacePage() {
     }
   }, []);
 
-  const handleBuy = useCallback((listing: Listing) => {
-    setActionFeedback(
-      `Buy action queued for ${listing.title} at ${listing.price} ${listing.currency}. (Mock transaction)`
-    );
-    console.info('Buy listing request', { listing, owner: publicKey?.toBase58() });
-  }, [publicKey]);
+  const handleBuy = useCallback(async (listing: Listing) => {
+    if (!connected || !publicKey) {
+      setActionFeedback('Connect your Phantom wallet to purchase.');
+      return;
+    }
+
+    if (!listing.beatHashHex || !listing.beatMint || !listing.termsCid || !listing.licenseType || !listing.territory || !listing.validUntil) {
+      setActionFeedback('This listing is not yet ready for on-chain minting.');
+      return;
+    }
+
+    try {
+      setBuyingId(listing.id);
+      setActionFeedback('Preparing transaction…');
+
+      const response = await fetch('/api/ix/license/initialize', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          beatHashHex: listing.beatHashHex,
+          beatMint: listing.beatMint,
+          termsCid: listing.termsCid,
+          licenseType: listing.licenseType,
+          territory: listing.territory,
+          validUntil: listing.validUntil,
+        }),
+        credentials: 'include',
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(errorText || 'Failed to build transaction');
+      }
+
+      const { transaction } = await response.json();
+
+      const tx = Transaction.from(Buffer.from(transaction, 'base64'));
+      const signature = await sendTransaction(tx, connection);
+      await connection.confirmTransaction(signature, 'confirmed');
+
+      setActionFeedback(`License minted! Signature ${signature.slice(0, 8)}…`);
+      console.info('License minted', { listing, signature });
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Failed to process transaction.';
+      setActionFeedback(message);
+      console.error('Buy listing failed', error);
+    } finally {
+      setBuyingId(null);
+    }
+  }, [connected, connection, publicKey, sendTransaction]);
 
   const handleContact = useCallback((listing: Listing) => {
     if (!listing.telegram) {
@@ -125,7 +173,7 @@ export default function MarketplacePage() {
           </div>
         </div>
 
-        <MarketplaceGrid listings={listings} onBuy={handleBuy} onContact={handleContact} />
+        <MarketplaceGrid listings={listings} onBuy={handleBuy} onContact={handleContact} buyingId={buyingId} />
       </motion.section>
 
       <AnimatePresence>

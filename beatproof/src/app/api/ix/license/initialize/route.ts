@@ -10,14 +10,13 @@ const Body = z.object({
   licenseType: z.enum(['Exclusive', 'NonExclusive']),
   territory: z.string(),
   validUntil: z.string().or(z.number()).transform((val) => BigInt(val)),
-  issuer: z.string(), // PublicKey as base58
 });
 
 export async function POST(request: Request) {
   try {
-    let licensee: string;
+    let walletAddress: string;
     try {
-      licensee = requireWalletFromSession();
+      walletAddress = requireWalletFromSession();
     } catch (sessionError) {
       if (sessionError instanceof WalletSessionError) {
         return NextResponse.json({ error: sessionError.message }, { status: sessionError.status });
@@ -42,7 +41,6 @@ export async function POST(request: Request) {
       licenseType,
       territory,
       validUntil,
-      issuer,
     } = parsed.data;
     
     const txBase64 = await buildInitializeTransaction({
@@ -52,8 +50,8 @@ export async function POST(request: Request) {
       licenseType,
       territory,
       validUntil,
-      issuer,
-      licensee,
+      issuer: walletAddress,
+      licensee: walletAddress,
     });
     
     return NextResponse.json({

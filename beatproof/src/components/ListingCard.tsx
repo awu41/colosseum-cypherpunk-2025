@@ -3,11 +3,27 @@
 import { motion, useCycle } from 'framer-motion';
 import { Listing } from '@/data/listings';
 
-export default function ListingCard({ listing, onBuy, onContact }: { listing: Listing; onBuy: (listing: Listing) => void; onContact: (listing: Listing) => void }) {
+type Props = {
+  listing: Listing;
+  onBuy: (listing: Listing) => void;
+  onContact: (listing: Listing) => void;
+  isProcessing?: boolean;
+};
+
+export default function ListingCard({ listing, onBuy, onContact, isProcessing = false }: Props) {
   const [glimmer, cycleGlimmer] = useCycle(
     { boxShadow: '0 0 0 rgba(236, 192, 66, 0)' },
     { boxShadow: '0 0 22px rgba(236, 192, 66, 0.35)' }
   );
+
+  const buyDisabled =
+    isProcessing ||
+    !listing.beatHashHex ||
+    !listing.beatMint ||
+    !listing.termsCid ||
+    !listing.licenseType ||
+    !listing.territory ||
+    !listing.validUntil;
 
   return (
     <motion.article
@@ -93,8 +109,13 @@ export default function ListingCard({ listing, onBuy, onContact }: { listing: Li
           >
             Contact
           </button>
-          <button className="pill-button pill-button--primary" type="button" onClick={() => onBuy(listing)}>
-            Buy
+          <button
+            className="pill-button pill-button--primary"
+            type="button"
+            onClick={() => onBuy(listing)}
+            disabled={buyDisabled}
+          >
+            {isProcessing ? 'Processing…' : buyDisabled ? 'Unavailable' : 'Buy'}
           </button>
         </div>
       </footer>
