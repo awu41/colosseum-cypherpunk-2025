@@ -107,7 +107,13 @@ export default function MarketplacePage() {
       const details = await fetchLicenseAccount(listing, publicKey?.toBase58());
       setLicenseDetails(details);
     } catch (error) {
-      setLicenseDetails({ error: error instanceof Error ? error.message : 'Unable to load license.' });
+      const rawMessage = error instanceof Error ? error.message : 'Unable to load license.';
+      const friendly = rawMessage.includes('Not found')
+        ? 'No license account found for this wallet. Mint the license first or connect the purchasing wallet.'
+        : rawMessage.includes('Cannot read properties')
+        ? 'No active license exists yet. Mint the license before viewing details.'
+        : rawMessage;
+      setLicenseDetails({ error: friendly });
     } finally {
       setLoadingLicense(false);
     }
