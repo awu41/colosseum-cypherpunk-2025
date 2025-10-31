@@ -9,6 +9,7 @@ import NavBar from './NavBar';
 import MarketplaceGrid from './MarketplaceGrid';
 import { Listing, listings as initialListings } from '@/data/listings';
 import { loadCustomListings } from '@/lib/listings/storage';
+import { fetchLicenseAccount } from '@/lib/licenses/api';
 
 export default function MarketplacePage() {
   const { publicKey, sendTransaction, connected } = useWallet();
@@ -16,6 +17,9 @@ export default function MarketplacePage() {
   const [contactListing, setContactListing] = useState<Listing | null>(null);
   const [listings, setListings] = useState<Listing[]>(initialListings);
   const [buyingId, setBuyingId] = useState<string | null>(null);
+  const [viewingListing, setViewingListing] = useState<Listing | null>(null);
+  const [licenseDetails, setLicenseDetails] = useState<any>(null);
+  const [loadingLicense, setLoadingLicense] = useState(false);
 
   const connection = useMemo(() => new Connection(clusterApiUrl('devnet'), 'confirmed'), []);
 
@@ -89,6 +93,24 @@ export default function MarketplacePage() {
 
     setContactListing(listing);
     console.info('Contact artist request', { listing, owner: publicKey?.toBase58() });
+  }, [publicKey]);
+
+  const handleViewLicense = useCallback(async (listing: Listing) => {
+    if (!listing.beatHashHex) {
+      setActionFeedback('Listing missing beat hash metadata.');
+      return;
+    }
+
+    try {
+      setViewingListing(listing);
+      setLoadingLicense(true);
+      const details = await fetchLicenseAccount(listing, publicKey?.toBase58());
+      setLicenseDetails(details);
+    } catch (error) {
+      setLicenseDetails({ error: error instanceof Error ? error.message : 'Unable to load license.' });
+    } finally {
+      setLoadingLicense(false);
+    }
   }, [publicKey]);
 
   useEffect(() => {
@@ -173,7 +195,13 @@ export default function MarketplacePage() {
           </div>
         </div>
 
-        <MarketplaceGrid listings={listings} onBuy={handleBuy} onContact={handleContact} buyingId={buyingId} />
+        <MarketplaceGrid
+          listings={listings}
+          onBuy={handleBuy}
+          onContact={handleContact}
+          onViewLicense={handleViewLicense}
+          buyingId={buyingId}
+        />
       </motion.section>
 
       <AnimatePresence>
@@ -257,6 +285,78 @@ export default function MarketplacePage() {
                 >
                   Message {readableTelegram}
                 </a>
+              )}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {viewingListing && (
+          <motion.div
+            key='license-details'
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 30 }}
+            transition={{ duration: 0.35 }}
+            className='island contact-island'
+            role='dialog'
+            aria-labelledby='license-title'
+          >
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '1rem' }}>
+              <div>
+                <h3 id='license-title' style={{ margin: 0 }}>
+                  License details
+                </h3>
+                <p style={{ margin: '0.35rem 0 0', color: 'rgba(227, 229, 236, 0.7)' }}>
+                  On-chain record for {viewingListing.title}
+                </p>
+              </div>
+              <button className='ghost-button ghost-button--dev' type='button' onClick={() => setViewingListing(null)}>
+                Close
+              </button>
+            </div>
+
+            <div className='contact-island__body' style={{ gap: '1rem' }}>
+              {loadingLicense ? (
+                <p>Loading license account…</p>
+              ) : licenseDetails?.error ? (
+                <p style={{ color: '#f6a6a6', margin: 0 }}>{licenseDetails.error}</p>
+              ) : (
+                <>
+                  <div>
+                    <span className='contact-label'>PDA</span>
+                    <p className='contact-value' style={{ wordBreak: 'break-all' }}>{licenseDetails?.pda}</p>
+                  </div>
+                  <div>
+                    <span className='contact-label'>Issuer</span>
+                    <p className='contact-value'>{licenseDetails?.issuer}</p>
+                  </div>
+                  <div>
+                    <span className='contact-label'>Licensee</span>
+                    <p className='contact-value'>{licenseDetails?.licensee}</p>
+                  </div>
+                  <div>
+                    <span className='contact-label'>Beat Mint</span>
+                    <p className='contact-value' style={{ wordBreak: 'break-all' }}>{licenseDetails?.beatMint}</p>
+                  </div>
+                  <div>
+                    <span className='contact-label'>License Type</span>
+                    <p className='contact-value'>{licenseDetails?.licenseType}</p>
+                  </div>
+                  <div>
+                    <span className='contact-label'>Territory</span>
+                    <p className='contact-value'>{licenseDetails?.territory}</p>
+                  </div>
+                  <div>
+                    <span className='contact-label'>Valid Until</span>
+                    <p className='contact-value'>{licenseDetails?.validUntil}</p>
+                  </div>
+                  <div>
+                    <span className='contact-label'>Status</span>
+                    <p className='contact-value'>{licenseDetails?.revoked ? 'Revoked' : 'Active'}</p>
+                  </div>
+                </>
               )}
             </div>
           </motion.div>

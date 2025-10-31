@@ -7,10 +7,11 @@ type Props = {
   listing: Listing;
   onBuy: (listing: Listing) => void;
   onContact: (listing: Listing) => void;
+  onViewLicense: (listing: Listing) => void;
   isProcessing?: boolean;
 };
 
-export default function ListingCard({ listing, onBuy, onContact, isProcessing = false }: Props) {
+export default function ListingCard({ listing, onBuy, onContact, onViewLicense, isProcessing = false }: Props) {
   const [glimmer, cycleGlimmer] = useCycle(
     { boxShadow: '0 0 0 rgba(236, 192, 66, 0)' },
     { boxShadow: '0 0 22px rgba(236, 192, 66, 0.35)' }
@@ -116,6 +117,14 @@ export default function ListingCard({ listing, onBuy, onContact, isProcessing = 
             disabled={buyDisabled}
           >
             {isProcessing ? 'Processing…' : buyDisabled ? 'Unavailable' : 'Buy'}
+          </button>
+          <button
+            className="pill-button pill-button--ghost"
+            type="button"
+            onClick={() => onViewLicense(listing)}
+            disabled={!listing.beatHashHex}
+          >
+            View License
           </button>
         </div>
       </footer>
