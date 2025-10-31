@@ -2,6 +2,7 @@ import { z } from 'zod';
 import { buildInitializeTransaction } from '@/lib/solana/builders';
 import { requireWalletFromSession, WalletSessionError } from '@/lib/auth/session';
 import { NextResponse } from 'next/server';
+import idl from '@/idl/soundcloud_license.json';
 
 const Body = z.object({
   beatHashHex: z.string().length(64),
@@ -52,6 +53,8 @@ export async function POST(request: Request) {
       validUntil,
       walletAddress,
     });
+
+    console.info('[initialize-license] idl', idl);
     
     const txBase64 = await buildInitializeTransaction({
       beatHashHex,
