@@ -2,9 +2,11 @@
 
 import { useCallback, useEffect, useState } from 'react';
 import { useWallet } from '@solana/wallet-adapter-react';
+import { WalletName } from '@solana/wallet-adapter-base';
 import { motion } from 'framer-motion';
 
 const SESSION_COOKIE_ENDPOINT = '/api/session';
+const PHANTOM_WALLET_NAME: WalletName<'Phantom'> = 'Phantom';
 
 type ConnectWalletButtonProps = {
   onMissingWallet?: () => void;
@@ -43,7 +45,7 @@ export default function ConnectWalletButton({ onMissingWallet }: ConnectWalletBu
         return;
       }
 
-      select?.('Phantom');
+      select?.(PHANTOM_WALLET_NAME);
       await connect();
     } catch (error: any) {
       setStatusMessage(error?.message ?? 'Unable to reach Phantom wallet.');
